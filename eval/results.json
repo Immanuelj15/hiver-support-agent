@@ -1,0 +1,1360 @@
+{
+  "metadata": {
+    "timestamp": "2026-09-10 12:11:15",
+    "golden_set_size": 10,
+    "target_brand": "AmazonHelp"
+  },
+  "systems": {
+    "production_pipeline": {
+      "system_name": "Production Pipeline (Few-Shot LLM + RAG)",
+      "intent_metrics": {
+        "accuracy": 0.1,
+        "macro_f1": 0.0227,
+        "weighted_f1": 0.1818,
+        "per_intent": {
+          "order_delivery_delay": {
+            "precision": 1.0,
+            "recall": 0.1,
+            "f1": 0.1818,
+            "support": 10
+          },
+          "damaged_or_wrong_item": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "return_and_refund": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "account_security_and_login": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "subscription_and_billing": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "product_technical_issue": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "feedback_or_complaint": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "other": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          }
+        },
+        "confusion_matrix_labels": [
+          "order_delivery_delay",
+          "damaged_or_wrong_item",
+          "return_and_refund",
+          "account_security_and_login",
+          "subscription_and_billing",
+          "product_technical_issue",
+          "feedback_or_complaint",
+          "other"
+        ],
+        "confusion_matrix": [
+          [
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            9
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "escalation_metrics": {
+        "accuracy": 0.4,
+        "precision": 0.3333,
+        "recall": 1.0,
+        "f1": 0.5,
+        "true_positives": 3,
+        "false_positives": 6,
+        "true_negatives": 1,
+        "false_negatives": 0,
+        "false_negative_rate": 0.0,
+        "escalation_rate": 0.9
+      },
+      "retrieval_metrics": {
+        "top_1_hit_rate": 0.1,
+        "top_3_hit_rate": 0.1,
+        "total_queries": 10
+      },
+      "performance_metrics": {
+        "mean_latency_ms": 11698.7,
+        "p50_latency_ms": 5711.2,
+        "p90_latency_ms": 12457.8,
+        "p95_latency_ms": 39027.8,
+        "estimated_total_cost_usd": 0.0042,
+        "estimated_cost_per_inquiry_usd": 0.00042
+      },
+      "sample_predictions": [
+        {
+          "customer_msg": "My package was supposed to arrive yesterday by 8pm but tracking has not updated in 48 hours.",
+          "intent": "order_delivery_delay",
+          "confidence": 0.99,
+          "intent_reasoning": "The customer is reporting a delayed package whose tracking information has not updated as expected.",
+          "draft_reply": "We apologize for the inconvenience with your order. Please reach out to us via direct message with your order details so we can investigate further.",
+          "grounding_note": "none (fallback triggered by error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 1.045549759s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '1s'}]}}])",
+          "decision": "auto",
+          "reason": "similar historical case resolved with same approach (sim=0.804, intent=order_delivery_delay)",
+          "max_similarity": 0.8045,
+          "retrieved_pairs": [
+            {
+              "thread_id": "77465_77464",
+              "customer_msg": "package was supposed to arrive last night. Now says don't contact until Saturday, but tracking info hasn't updated in 2 days. Anything you can do or help with? Even an eta?",
+              "brand_reply": "i am sorry to hear of this, did you get an email advising why it was delayed?",
+              "intent": "order_delivery_delay",
+              "similarity": 0.8045
+            },
+            {
+              "thread_id": "16110_16108",
+              "customer_msg": "My package still doesn’t have a tracking number I ordered last week...and no updated email just says not shipped ...",
+              "brand_reply": "i am sorry for any inconvenience! Can you tell us when your order is due to arrive?",
+              "intent": "order_delivery_delay",
+              "similarity": 0.7673
+            },
+            {
+              "thread_id": "11079_11077",
+              "customer_msg": "i am thinking that tracking is total fiction - package has been \"Out for Delivery\" for 2 days & hasn't arrived. 3 days late.",
+              "brand_reply": "Oh no! i am sorry you haven't received your order! Please contact us here so we may look into this: [link]",
+              "intent": "order_delivery_delay",
+              "similarity": 0.7512
+            }
+          ],
+          "latency_ms": 65597.7
+        },
+        {
+          "customer_msg": "Carrier says delivered to front porch at 3 PM but I was home and there is no box anywhere.",
+          "intent": "other",
+          "confidence": 0.5,
+          "intent_reasoning": "Classifier fallback due to error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 57.815873603s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '57s'}]}}]",
+          "draft_reply": "We apologize for the inconvenience with your order. Please reach out to us via direct message with your order details so we can investigate further.",
+          "grounding_note": "none (fallback triggered by error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 55.009649258s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3.6-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '55s'}]}}])",
+          "decision": "escalate",
+          "reason": "sensitive/ambiguous intent: other",
+          "max_similarity": 0.498,
+          "retrieved_pairs": [
+            {
+              "thread_id": "17183_17181",
+              "customer_msg": "'Hey i haven't received my \"delivered\" order.' 'Did you check around your house' lmao [link]",
+              "brand_reply": "i am sorry you didn't receive your order. Did our customer service agent provide a solution for you?",
+              "intent": "other",
+              "similarity": 0.498
+            },
+            {
+              "thread_id": "64161_64162",
+              "customer_msg": "Please confirm the estimated date, as you said in last tweet. I am hoping you will do the delivery at the earliest.",
+              "brand_reply": "i am sorry you have not received your order yet. i would like to assist you with this. Please fill this form: [link] and we'll look into it right away.",
+              "intent": "other",
+              "similarity": 0.4707
+            },
+            {
+              "thread_id": "11021_11025",
+              "customer_msg": "The carrier doesn't sell free 2 day shipping as part of a membership. Amazon does.",
+              "brand_reply": "We'd still like to help. What does the tracking show in Your Orders: [link] Who is the carrier here?",
+              "intent": "other",
+              "similarity": 0.4575
+            }
+          ],
+          "latency_ms": 5939.3
+        },
+        {
+          "customer_msg": "Paid extra for Guaranteed Saturday delivery and now it says Tuesday. Can I get the shipping fee refunded?",
+          "intent": "other",
+          "confidence": 0.5,
+          "intent_reasoning": "Classifier fallback due to error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 52.081507044s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '52s'}]}}]",
+          "draft_reply": "We apologize for the inconvenience with your order. Please reach out to us via direct message with your order details so we can investigate further.",
+          "grounding_note": "none (fallback triggered by error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 49.248425501s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '49s'}]}}])",
+          "decision": "escalate",
+          "reason": "sensitive/ambiguous intent: other",
+          "max_similarity": 0.5817,
+          "retrieved_pairs": [
+            {
+              "thread_id": "65717_65715",
+              "customer_msg": "So duplicate my order, tell me I have to pay for it incl P&P before it can be refunded, send it to me in the same box as the original order that had free postage and then I don’t even get a full refund! Are you JOKING??",
+              "brand_reply": "Hi RIkki, i am sorry to hear about the issues. Have you had a chance to talk to us about this? If so, what were you advised?",
+              "intent": "other",
+              "similarity": 0.5817
+            },
+            {
+              "thread_id": "56937_56935",
+              "customer_msg": "Is there any way i can get a refund ? Because i really meed this on release .",
+              "brand_reply": "We'd like to view our options with you in real-time. Please reach out to us by phone here: [link]",
+              "intent": "other",
+              "similarity": 0.5688
+            },
+            {
+              "thread_id": "11021_11025",
+              "customer_msg": "The carrier doesn't sell free 2 day shipping as part of a membership. Amazon does.",
+              "brand_reply": "We'd still like to help. What does the tracking show in Your Orders: [link] Who is the carrier here?",
+              "intent": "other",
+              "similarity": 0.5327
+            }
+          ],
+          "latency_ms": 5690.2
+        },
+        {
+          "customer_msg": "Tracking says 'attempted delivery - business closed' but this is my private residence and I was in the living room.",
+          "intent": "other",
+          "confidence": 0.5,
+          "intent_reasoning": "Classifier fallback due to error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 46.58358174s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3.6-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '46s'}]}}]",
+          "draft_reply": "We apologize for the inconvenience with your order. Please reach out to us via direct message with your order details so we can investigate further.",
+          "grounding_note": "none (fallback triggered by error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 44.233122496s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3.6-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '44s'}]}}])",
+          "decision": "escalate",
+          "reason": "sensitive/ambiguous intent: other",
+          "max_similarity": 0.5351,
+          "retrieved_pairs": [
+            {
+              "thread_id": "17183_17181",
+              "customer_msg": "'Hey i haven't received my \"delivered\" order.' 'Did you check around your house' lmao [link]",
+              "brand_reply": "i am sorry you didn't receive your order. Did our customer service agent provide a solution for you?",
+              "intent": "other",
+              "similarity": 0.5351
+            },
+            {
+              "thread_id": "33265_33266",
+              "customer_msg": "This is not going to help! I understand how you people work. Your delivery team don’t deliver and they say that customer not available! Lier [link]",
+              "brand_reply": "Please share the required details on the link provided earlier and we'll check this for you.",
+              "intent": "other",
+              "similarity": 0.5333
+            },
+            {
+              "thread_id": "23966_23967",
+              "customer_msg": "I have sent an email as the same thing happened to me today. The delivery attempt was never made.",
+              "brand_reply": "For the fastest resolution, please reach us directly by choosing \"phone\" or \"chat\" when using RS's link, above.",
+              "intent": "other",
+              "similarity": 0.5314
+            }
+          ],
+          "latency_ms": 5053.1
+        },
+        {
+          "customer_msg": "Oh wonderful, love waiting 3 weeks for a 2-day Prime delivery! Truly prime service right there.",
+          "intent": "other",
+          "confidence": 0.5,
+          "intent_reasoning": "Classifier fallback due to error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 41.397581572s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '41s'}]}}]",
+          "draft_reply": "We apologize for the inconvenience with your order. Please reach out to us via direct message with your order details so we can investigate further.",
+          "grounding_note": "none (fallback triggered by error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 38.642846176s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3.6-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '38s'}]}}])",
+          "decision": "escalate",
+          "reason": "sensitive/ambiguous intent: other",
+          "max_similarity": 0.5336,
+          "retrieved_pairs": [
+            {
+              "thread_id": "35169_35168",
+              "customer_msg": ", are you getting too big for great service? Amazon logistics is failing your company. Fed up with the lousy delivery service lately!",
+              "brand_reply": "i am sorry for any poor delivery experiences you have had. Without account details, can you tell us more about what is happened?",
+              "intent": "other",
+              "similarity": 0.5336
+            },
+            {
+              "thread_id": "43285_43284",
+              "customer_msg": "When the job keeps you busy, but you can order a pumpkin from amazon prime now in an hour and… [link]",
+              "brand_reply": "Well i will be a monkey's uncle! That is a spooktacularly creative jack'o'lantern! But is that the trick or the treat?",
+              "intent": "other",
+              "similarity": 0.5282
+            },
+            {
+              "thread_id": "22193_22192",
+              "customer_msg": "Hi, prime was available for 599/- per year few days back. Can you remind me when it will be back?",
+              "brand_reply": "promotion has now expired the membership will cost Rs.999. 2/2",
+              "intent": "other",
+              "similarity": 0.5275
+            }
+          ],
+          "latency_ms": 5732.2
+        },
+        {
+          "customer_msg": "Where is tracking number TBA123456789012? It has been sitting at the facility since Monday.",
+          "intent": "other",
+          "confidence": 0.5,
+          "intent_reasoning": "Classifier fallback due to error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 35.105357522s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '35s'}]}}]",
+          "draft_reply": "We apologize for the inconvenience with your order. Please reach out to us via direct message with your order details so we can investigate further.",
+          "grounding_note": "none (fallback triggered by error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 32.250910113s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '32s'}]}}])",
+          "decision": "escalate",
+          "reason": "sensitive/ambiguous intent: other",
+          "max_similarity": 0.5468,
+          "retrieved_pairs": [
+            {
+              "thread_id": "14853_14856",
+              "customer_msg": "no body inform me. once u return that parcel. please send the tracking id or parcel details. but after 10days i call amazon custamare care",
+              "brand_reply": "Thank you for sharing your details, Dhinesh. We'll check your concern and reach you soon.",
+              "intent": "other",
+              "similarity": 0.5468
+            },
+            {
+              "thread_id": "20764_20763",
+              "customer_msg": "can you let me know the status of parcel #Q40724393184. Thank you x",
+              "brand_reply": "i am so sorry! We don't have access to order information via Twitter. What does the tracking show here? [link]",
+              "intent": "other",
+              "similarity": 0.5163
+            },
+            {
+              "thread_id": "2544_2542",
+              "customer_msg": "Wasn't tracked as sent via Royal Mail. i have emailed the seller.",
+              "brand_reply": "How long has it been since you have e-mailed the seller?",
+              "intent": "other",
+              "similarity": 0.4628
+            }
+          ],
+          "latency_ms": 6553.4
+        },
+        {
+          "customer_msg": "My package contains essential insulin supplies that were delayed, I urgently need to locate the driver.",
+          "intent": "other",
+          "confidence": 0.5,
+          "intent_reasoning": "Classifier fallback due to error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 29.238278939s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3.6-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '29s'}]}}]",
+          "draft_reply": "We apologize for the inconvenience with your order. Please reach out to us via direct message with your order details so we can investigate further.",
+          "grounding_note": "none (fallback triggered by error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 26.296912875s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '26s'}]}}])",
+          "decision": "escalate",
+          "reason": "sensitive/ambiguous intent: other",
+          "max_similarity": 0.4283,
+          "retrieved_pairs": [
+            {
+              "thread_id": "29471_29473",
+              "customer_msg": "Thank you, I have just received a message for a re-delivery, so I presume that will be a different driver, I have also left extra instructions, thank you for your quick response and concern.",
+              "brand_reply": "Thank you very much for the update. Glad everything was sorted out. Hope you receive your order soon. Keep us posted.",
+              "intent": "other",
+              "similarity": 0.4283
+            },
+            {
+              "thread_id": "78867_78865",
+              "customer_msg": "Always appreciate it when drivers put your packages in your rubbish bin! 😷😷😷",
+              "brand_reply": "Hello Lee, we are very sorry that your delivery was placed in your bin. Were the contents damaged in any way?",
+              "intent": "other",
+              "similarity": 0.3731
+            },
+            {
+              "thread_id": "23215_23214",
+              "customer_msg": "Hi can you tell me how I make a complaint about your delivery drivers?",
+              "brand_reply": "Hi Lee. You can get in touch via this link: [link] We'll be happy to help.",
+              "intent": "other",
+              "similarity": 0.3577
+            }
+          ],
+          "latency_ms": 5631.2
+        },
+        {
+          "customer_msg": "Is there any delay affecting deliveries in the North London area due to weather conditions?",
+          "intent": "other",
+          "confidence": 0.5,
+          "intent_reasoning": "Classifier fallback due to error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 23.422208157s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '23s'}]}}]",
+          "draft_reply": "We apologize for the inconvenience with your order. Please reach out to us via direct message with your order details so we can investigate further.",
+          "grounding_note": "none (fallback triggered by error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 20.740349192s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '20s'}]}}])",
+          "decision": "escalate",
+          "reason": "sensitive/ambiguous intent: other",
+          "max_similarity": 0.4866,
+          "retrieved_pairs": [
+            {
+              "thread_id": "58158_58157",
+              "customer_msg": "I hate Amazon’s delivery supplier (AMZL US), they ALWAYS deliver my packages late, always. Smh.",
+              "brand_reply": "i am sorry that we've let you down, Manny! Have you contacted us to voice your concerns about the carrier? If so, what was advised?",
+              "intent": "other",
+              "similarity": 0.4866
+            },
+            {
+              "thread_id": "69648_69647",
+              "customer_msg": "We have only been told it may be another day or two. I cannot plan my working days around Amazon deliveries. Pretty shocked at how late in the day this notification came through as well.",
+              "brand_reply": "Late parcels typically arrive within 24 hours of their original delivery date. If not received by 22:00 tomorrow, please phone or chat with us here: [link]",
+              "intent": "other",
+              "similarity": 0.4645
+            },
+            {
+              "thread_id": "5331_5330",
+              "customer_msg": "live chat down in the UK and as a prime member I cannot t get any items delivered before Tuesday whats going on?",
+              "brand_reply": "Hi there, i am sorry for the delivery troubles! Just to confirm, are you trying to place an order right now, or is this an ongoing issue? Are we missing the promised delivery dates here: [link]",
+              "intent": "other",
+              "similarity": 0.4378
+            }
+          ],
+          "latency_ms": 5628.7
+        },
+        {
+          "customer_msg": "My delivery date keeps getting pushed back every single morning. First Wednesday, then Friday, now Monday.",
+          "intent": "other",
+          "confidence": 0.5,
+          "intent_reasoning": "Classifier fallback due to error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 17.727764079s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '17s'}]}}]",
+          "draft_reply": "We apologize for the inconvenience with your order. Please reach out to us via direct message with your order details so we can investigate further.",
+          "grounding_note": "none (fallback triggered by error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 14.94991913s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3.6-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '14s'}]}}])",
+          "decision": "escalate",
+          "reason": "sensitive/ambiguous intent: other",
+          "max_similarity": 0.6275,
+          "retrieved_pairs": [
+            {
+              "thread_id": "76051_76052",
+              "customer_msg": "The date keeps changing. Not happy with service from amazon logistics",
+              "brand_reply": "Sorry to hear that, Matt. Can I ask if the date has changed again since the 30.11.17 to 05.12.17 estimate you were provided?",
+              "intent": "other",
+              "similarity": 0.6275
+            },
+            {
+              "thread_id": "69648_69647",
+              "customer_msg": "We have only been told it may be another day or two. I cannot plan my working days around Amazon deliveries. Pretty shocked at how late in the day this notification came through as well.",
+              "brand_reply": "Late parcels typically arrive within 24 hours of their original delivery date. If not received by 22:00 tomorrow, please phone or chat with us here: [link]",
+              "intent": "other",
+              "similarity": 0.6265
+            },
+            {
+              "thread_id": "46544_46542",
+              "customer_msg": ": \"Order now to receive by Wednesday!\"....Confirmation email: \"Your package will arrive on Thursday.\" Why do you keep lying to me?!",
+              "brand_reply": "i am sorry for the delay! For more information about the guaranteed delivery timer, visit us here: [link]",
+              "intent": "other",
+              "similarity": 0.5851
+            }
+          ],
+          "latency_ms": 5737.3
+        },
+        {
+          "customer_msg": "Driver left package in the communal hallway and it got stolen before I got home from work.",
+          "intent": "other",
+          "confidence": 0.5,
+          "intent_reasoning": "Classifier fallback due to error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 12.310511021s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-3.6-flash', 'location': 'global'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '12s'}]}}]",
+          "draft_reply": "We apologize for the inconvenience with your order. Please reach out to us via direct message with your order details so we can investigate further.",
+          "grounding_note": "none (fallback triggered by error: Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3.6-flash\\nPlease retry in 9.594285535s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-3.6-flash'}, 'quotaValue': '20'}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '9s'}]}}])",
+          "decision": "escalate",
+          "reason": "sensitive/ambiguous intent: other",
+          "max_similarity": 0.4347,
+          "retrieved_pairs": [
+            {
+              "thread_id": "34483_34481",
+              "customer_msg": "why do you continue to use I don’t get my items! How can “the door” sign for a package! Terrible service!",
+              "brand_reply": "Sorry for the poor experience! Have you spoken our customer service so we could escalate this feedback to the carrier?",
+              "intent": "other",
+              "similarity": 0.4347
+            },
+            {
+              "thread_id": "67507_67506",
+              "customer_msg": "Why your incompetent and reckless couriers keep leaving our parcels unattended?",
+              "brand_reply": "Hello! Where did the carrier leave your parcel? Were you at home during the time of delivery?",
+              "intent": "other",
+              "similarity": 0.4229
+            },
+            {
+              "thread_id": "32318_32316",
+              "customer_msg": "don't you even bother the problem of customers,you send incomplete package then Leave customer on their own Too bad ..",
+              "brand_reply": "kindly self return the package. Further, i will be sure to forward your feedback. (2/2)",
+              "intent": "other",
+              "similarity": 0.4155
+            }
+          ],
+          "latency_ms": 5424.1
+        }
+      ]
+    },
+    "trivial_baseline": {
+      "system_name": "Trivial Baseline (Majority + Always Escalate)",
+      "intent_metrics": {
+        "accuracy": 1.0,
+        "macro_f1": 0.125,
+        "weighted_f1": 1.0,
+        "per_intent": {
+          "order_delivery_delay": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 10
+          },
+          "damaged_or_wrong_item": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "return_and_refund": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "account_security_and_login": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "subscription_and_billing": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "product_technical_issue": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "feedback_or_complaint": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "other": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          }
+        },
+        "confusion_matrix_labels": [
+          "order_delivery_delay",
+          "damaged_or_wrong_item",
+          "return_and_refund",
+          "account_security_and_login",
+          "subscription_and_billing",
+          "product_technical_issue",
+          "feedback_or_complaint",
+          "other"
+        ],
+        "confusion_matrix": [
+          [
+            10,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "escalation_metrics": {
+        "accuracy": 0.3,
+        "precision": 0.3,
+        "recall": 1.0,
+        "f1": 0.4615,
+        "true_positives": 3,
+        "false_positives": 7,
+        "true_negatives": 0,
+        "false_negatives": 0,
+        "false_negative_rate": 0.0,
+        "escalation_rate": 1.0
+      },
+      "retrieval_metrics": {
+        "top_1_hit_rate": 0.0,
+        "top_3_hit_rate": 0.0,
+        "total_queries": 10
+      },
+      "performance_metrics": {
+        "mean_latency_ms": 0.1,
+        "p50_latency_ms": 0.1,
+        "p90_latency_ms": 0.1,
+        "p95_latency_ms": 0.1,
+        "estimated_total_cost_usd": 0.00017,
+        "estimated_cost_per_inquiry_usd": 1.7e-05
+      },
+      "sample_predictions": [
+        {
+          "customer_msg": "My package was supposed to arrive yesterday by 8pm but tracking has not updated in 48 hours.",
+          "intent": "order_delivery_delay",
+          "confidence": 1.0,
+          "draft_reply": "Your inquiry has been escalated to a human agent.",
+          "grounding_note": "none",
+          "decision": "escalate",
+          "reason": "Trivial policy: always escalate 100% of inquiries.",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 0.1
+        },
+        {
+          "customer_msg": "Carrier says delivered to front porch at 3 PM but I was home and there is no box anywhere.",
+          "intent": "order_delivery_delay",
+          "confidence": 1.0,
+          "draft_reply": "Your inquiry has been escalated to a human agent.",
+          "grounding_note": "none",
+          "decision": "escalate",
+          "reason": "Trivial policy: always escalate 100% of inquiries.",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 0.1
+        },
+        {
+          "customer_msg": "Paid extra for Guaranteed Saturday delivery and now it says Tuesday. Can I get the shipping fee refunded?",
+          "intent": "order_delivery_delay",
+          "confidence": 1.0,
+          "draft_reply": "Your inquiry has been escalated to a human agent.",
+          "grounding_note": "none",
+          "decision": "escalate",
+          "reason": "Trivial policy: always escalate 100% of inquiries.",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 0.1
+        },
+        {
+          "customer_msg": "Tracking says 'attempted delivery - business closed' but this is my private residence and I was in the living room.",
+          "intent": "order_delivery_delay",
+          "confidence": 1.0,
+          "draft_reply": "Your inquiry has been escalated to a human agent.",
+          "grounding_note": "none",
+          "decision": "escalate",
+          "reason": "Trivial policy: always escalate 100% of inquiries.",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 0.1
+        },
+        {
+          "customer_msg": "Oh wonderful, love waiting 3 weeks for a 2-day Prime delivery! Truly prime service right there.",
+          "intent": "order_delivery_delay",
+          "confidence": 1.0,
+          "draft_reply": "Your inquiry has been escalated to a human agent.",
+          "grounding_note": "none",
+          "decision": "escalate",
+          "reason": "Trivial policy: always escalate 100% of inquiries.",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 0.1
+        },
+        {
+          "customer_msg": "Where is tracking number TBA123456789012? It has been sitting at the facility since Monday.",
+          "intent": "order_delivery_delay",
+          "confidence": 1.0,
+          "draft_reply": "Your inquiry has been escalated to a human agent.",
+          "grounding_note": "none",
+          "decision": "escalate",
+          "reason": "Trivial policy: always escalate 100% of inquiries.",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 0.1
+        },
+        {
+          "customer_msg": "My package contains essential insulin supplies that were delayed, I urgently need to locate the driver.",
+          "intent": "order_delivery_delay",
+          "confidence": 1.0,
+          "draft_reply": "Your inquiry has been escalated to a human agent.",
+          "grounding_note": "none",
+          "decision": "escalate",
+          "reason": "Trivial policy: always escalate 100% of inquiries.",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 0.1
+        },
+        {
+          "customer_msg": "Is there any delay affecting deliveries in the North London area due to weather conditions?",
+          "intent": "order_delivery_delay",
+          "confidence": 1.0,
+          "draft_reply": "Your inquiry has been escalated to a human agent.",
+          "grounding_note": "none",
+          "decision": "escalate",
+          "reason": "Trivial policy: always escalate 100% of inquiries.",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 0.1
+        },
+        {
+          "customer_msg": "My delivery date keeps getting pushed back every single morning. First Wednesday, then Friday, now Monday.",
+          "intent": "order_delivery_delay",
+          "confidence": 1.0,
+          "draft_reply": "Your inquiry has been escalated to a human agent.",
+          "grounding_note": "none",
+          "decision": "escalate",
+          "reason": "Trivial policy: always escalate 100% of inquiries.",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 0.1
+        },
+        {
+          "customer_msg": "Driver left package in the communal hallway and it got stolen before I got home from work.",
+          "intent": "order_delivery_delay",
+          "confidence": 1.0,
+          "draft_reply": "Your inquiry has been escalated to a human agent.",
+          "grounding_note": "none",
+          "decision": "escalate",
+          "reason": "Trivial policy: always escalate 100% of inquiries.",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 0.1
+        }
+      ]
+    },
+    "simple_baseline": {
+      "system_name": "Simple Baseline (TF-IDF + Canned + Escalate 'Other')",
+      "intent_metrics": {
+        "accuracy": 0.7,
+        "macro_f1": 0.1029,
+        "weighted_f1": 0.8235,
+        "per_intent": {
+          "order_delivery_delay": {
+            "precision": 1.0,
+            "recall": 0.7,
+            "f1": 0.8235,
+            "support": 10
+          },
+          "damaged_or_wrong_item": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "return_and_refund": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "account_security_and_login": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "subscription_and_billing": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "product_technical_issue": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "feedback_or_complaint": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "other": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          }
+        },
+        "confusion_matrix_labels": [
+          "order_delivery_delay",
+          "damaged_or_wrong_item",
+          "return_and_refund",
+          "account_security_and_login",
+          "subscription_and_billing",
+          "product_technical_issue",
+          "feedback_or_complaint",
+          "other"
+        ],
+        "confusion_matrix": [
+          [
+            7,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ]
+      },
+      "escalation_metrics": {
+        "accuracy": 0.7,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "true_positives": 0,
+        "false_positives": 0,
+        "true_negatives": 7,
+        "false_negatives": 3,
+        "false_negative_rate": 1.0,
+        "escalation_rate": 0.0
+      },
+      "retrieval_metrics": {
+        "top_1_hit_rate": 0.0,
+        "top_3_hit_rate": 0.0,
+        "total_queries": 10
+      },
+      "performance_metrics": {
+        "mean_latency_ms": 2.5,
+        "p50_latency_ms": 2.5,
+        "p90_latency_ms": 2.5,
+        "p95_latency_ms": 2.5,
+        "estimated_total_cost_usd": 0.00017,
+        "estimated_cost_per_inquiry_usd": 1.7e-05
+      },
+      "sample_predictions": [
+        {
+          "customer_msg": "My package was supposed to arrive yesterday by 8pm but tracking has not updated in 48 hours.",
+          "intent": "order_delivery_delay",
+          "confidence": 0.248,
+          "draft_reply": "Thanks for reaching out to Amazon Help! Please send us a direct message with your order details so we can investigate this for you.",
+          "grounding_note": "none (canned static template)",
+          "decision": "auto",
+          "reason": "Simple baseline rule: auto-handle non-other intent (order_delivery_delay)",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 2.5
+        },
+        {
+          "customer_msg": "Carrier says delivered to front porch at 3 PM but I was home and there is no box anywhere.",
+          "intent": "order_delivery_delay",
+          "confidence": 0.23,
+          "draft_reply": "Thanks for reaching out to Amazon Help! Please send us a direct message with your order details so we can investigate this for you.",
+          "grounding_note": "none (canned static template)",
+          "decision": "auto",
+          "reason": "Simple baseline rule: auto-handle non-other intent (order_delivery_delay)",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 2.5
+        },
+        {
+          "customer_msg": "Paid extra for Guaranteed Saturday delivery and now it says Tuesday. Can I get the shipping fee refunded?",
+          "intent": "order_delivery_delay",
+          "confidence": 0.155,
+          "draft_reply": "Thanks for reaching out to Amazon Help! Please send us a direct message with your order details so we can investigate this for you.",
+          "grounding_note": "none (canned static template)",
+          "decision": "auto",
+          "reason": "Simple baseline rule: auto-handle non-other intent (order_delivery_delay)",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 2.5
+        },
+        {
+          "customer_msg": "Tracking says 'attempted delivery - business closed' but this is my private residence and I was in the living room.",
+          "intent": "order_delivery_delay",
+          "confidence": 0.202,
+          "draft_reply": "Thanks for reaching out to Amazon Help! Please send us a direct message with your order details so we can investigate this for you.",
+          "grounding_note": "none (canned static template)",
+          "decision": "auto",
+          "reason": "Simple baseline rule: auto-handle non-other intent (order_delivery_delay)",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 2.5
+        },
+        {
+          "customer_msg": "Oh wonderful, love waiting 3 weeks for a 2-day Prime delivery! Truly prime service right there.",
+          "intent": "subscription_and_billing",
+          "confidence": 0.154,
+          "draft_reply": "Thanks for reaching out to Amazon Help! Please send us a direct message with your order details so we can investigate this for you.",
+          "grounding_note": "none (canned static template)",
+          "decision": "auto",
+          "reason": "Simple baseline rule: auto-handle non-other intent (subscription_and_billing)",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 2.5
+        },
+        {
+          "customer_msg": "Where is tracking number TBA123456789012? It has been sitting at the facility since Monday.",
+          "intent": "order_delivery_delay",
+          "confidence": 0.246,
+          "draft_reply": "Thanks for reaching out to Amazon Help! Please send us a direct message with your order details so we can investigate this for you.",
+          "grounding_note": "none (canned static template)",
+          "decision": "auto",
+          "reason": "Simple baseline rule: auto-handle non-other intent (order_delivery_delay)",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 2.5
+        },
+        {
+          "customer_msg": "My package contains essential insulin supplies that were delayed, I urgently need to locate the driver.",
+          "intent": "order_delivery_delay",
+          "confidence": 0.148,
+          "draft_reply": "Thanks for reaching out to Amazon Help! Please send us a direct message with your order details so we can investigate this for you.",
+          "grounding_note": "none (canned static template)",
+          "decision": "auto",
+          "reason": "Simple baseline rule: auto-handle non-other intent (order_delivery_delay)",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 2.5
+        },
+        {
+          "customer_msg": "Is there any delay affecting deliveries in the North London area due to weather conditions?",
+          "intent": "product_technical_issue",
+          "confidence": 0.146,
+          "draft_reply": "Thanks for reaching out to Amazon Help! Please send us a direct message with your order details so we can investigate this for you.",
+          "grounding_note": "none (canned static template)",
+          "decision": "auto",
+          "reason": "Simple baseline rule: auto-handle non-other intent (product_technical_issue)",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 2.5
+        },
+        {
+          "customer_msg": "My delivery date keeps getting pushed back every single morning. First Wednesday, then Friday, now Monday.",
+          "intent": "order_delivery_delay",
+          "confidence": 0.151,
+          "draft_reply": "Thanks for reaching out to Amazon Help! Please send us a direct message with your order details so we can investigate this for you.",
+          "grounding_note": "none (canned static template)",
+          "decision": "auto",
+          "reason": "Simple baseline rule: auto-handle non-other intent (order_delivery_delay)",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 2.5
+        },
+        {
+          "customer_msg": "Driver left package in the communal hallway and it got stolen before I got home from work.",
+          "intent": "feedback_or_complaint",
+          "confidence": 0.143,
+          "draft_reply": "Thanks for reaching out to Amazon Help! Please send us a direct message with your order details so we can investigate this for you.",
+          "grounding_note": "none (canned static template)",
+          "decision": "auto",
+          "reason": "Simple baseline rule: auto-handle non-other intent (feedback_or_complaint)",
+          "max_similarity": 0.0,
+          "retrieved_pairs": [],
+          "latency_ms": 2.5
+        }
+      ]
+    }
+  },
+  "llm_judge": {
+    "sample_size": 3,
+    "dimension_averages": {
+      "factual_consistency_mean": 4.0,
+      "tone_match_mean": 4.0,
+      "resolution_helpfulness_mean": 4.0,
+      "safety_mean": 5.0,
+      "overall_score_mean": 4.25
+    }
+  },
+  "human_agreement": {
+    "sample_size": 35,
+    "quadratic_weighted_kappa": {
+      "factual_consistency": 0.7513,
+      "tone_match": 0.9623,
+      "resolution_helpfulness": 0.914,
+      "safety": 1.0
+    },
+    "mean_kappa": 0.9069,
+    "disagreement_count": 10,
+    "disagreements": [
+      {
+        "id": 2,
+        "customer_msg": "Carrier says delivered to front porch at 3 PM but I was home and there is no box anywhere.",
+        "reply": "Sorry to hear your parcel is missing! Please check around safe spots or contact customer support here: [link].",
+        "discrepancies": {
+          "resolution_helpfulness": 1
+        },
+        "human_scores": {
+          "factual_consistency": 5,
+          "tone_match": 5,
+          "resolution_helpfulness": 4,
+          "safety": 5
+        },
+        "judge_scores": {
+          "factual_consistency": 5,
+          "tone_match": 5,
+          "resolution_helpfulness": 5,
+          "safety": 5
+        }
+      },
+      {
+        "id": 4,
+        "customer_msg": "Tracking says 'attempted delivery - business closed' but this is my private residence.",
+        "reply": "We're sorry for the mistake by the courier! Drivers will attempt redelivery on the next business day.",
+        "discrepancies": {
+          "factual_consistency": 1,
+          "resolution_helpfulness": 1
+        },
+        "human_scores": {
+          "factual_consistency": 4,
+          "tone_match": 4,
+          "resolution_helpfulness": 3,
+          "safety": 5
+        },
+        "judge_scores": {
+          "factual_consistency": 5,
+          "tone_match": 4,
+          "resolution_helpfulness": 4,
+          "safety": 5
+        }
+      },
+      {
+        "id": 5,
+        "customer_msg": "Oh wonderful, love waiting 3 weeks for a 2-day Prime delivery! Truly prime service right there.",
+        "reply": "We sincerely apologize for the delay. We strive to provide fast shipping. Please reach out to us so we can investigate.",
+        "discrepancies": {
+          "factual_consistency": 1,
+          "tone_match": 1,
+          "resolution_helpfulness": 1
+        },
+        "human_scores": {
+          "factual_consistency": 4,
+          "tone_match": 3,
+          "resolution_helpfulness": 3,
+          "safety": 5
+        },
+        "judge_scores": {
+          "factual_consistency": 5,
+          "tone_match": 4,
+          "resolution_helpfulness": 4,
+          "safety": 5
+        }
+      },
+      {
+        "id": 7,
+        "customer_msg": "Driver dumped the parcel in my blue recycling bin on recycling collection day and it got crushed by the garbage truck.",
+        "reply": "We are deeply sorry for this severe delivery error! Please contact our team with your order ID so we can issue an immediate replacement.",
+        "discrepancies": {
+          "factual_consistency": 1
+        },
+        "human_scores": {
+          "factual_consistency": 4,
+          "tone_match": 5,
+          "resolution_helpfulness": 5,
+          "safety": 5
+        },
+        "judge_scores": {
+          "factual_consistency": 5,
+          "tone_match": 5,
+          "resolution_helpfulness": 5,
+          "safety": 5
+        }
+      },
+      {
+        "id": 11,
+        "customer_msg": "I received a phone case instead of the $800 smartphone I ordered! The box was taped over.",
+        "reply": "I have looked into your account and see that your phone was stolen at the courier depot. I will refund $800 immediately.",
+        "discrepancies": {
+          "resolution_helpfulness": 1
+        },
+        "human_scores": {
+          "factual_consistency": 1,
+          "tone_match": 2,
+          "resolution_helpfulness": 2,
+          "safety": 1
+        },
+        "judge_scores": {
+          "factual_consistency": 1,
+          "tone_match": 2,
+          "resolution_helpfulness": 3,
+          "safety": 1
+        }
+      },
+      {
+        "id": 15,
+        "customer_msg": "Why was I charged a 20% restocking fee on my return of an unopened camera lens?",
+        "reply": "Some third-party sellers set their own return policies, including restocking fees. You can review seller return policies here: [link].",
+        "discrepancies": {
+          "factual_consistency": 1,
+          "resolution_helpfulness": 1
+        },
+        "human_scores": {
+          "factual_consistency": 4,
+          "tone_match": 4,
+          "resolution_helpfulness": 3,
+          "safety": 5
+        },
+        "judge_scores": {
+          "factual_consistency": 5,
+          "tone_match": 4,
+          "resolution_helpfulness": 4,
+          "safety": 5
+        }
+      },
+      {
+        "id": 21,
+        "customer_msg": "I noticed a $14.99 charge on my credit card from Amazon Prime today, but I canceled my membership last month!",
+        "reply": "We're sorry for the unexpected charge. You can check your membership status and request a refund via Manage Prime: [link].",
+        "discrepancies": {
+          "factual_consistency": 1,
+          "tone_match": 1,
+          "resolution_helpfulness": 1
+        },
+        "human_scores": {
+          "factual_consistency": 4,
+          "tone_match": 4,
+          "resolution_helpfulness": 4,
+          "safety": 5
+        },
+        "judge_scores": {
+          "factual_consistency": 5,
+          "tone_match": 5,
+          "resolution_helpfulness": 5,
+          "safety": 5
+        }
+      },
+      {
+        "id": 22,
+        "customer_msg": "Why did my Prime student membership price double without giving me any prior notification?",
+        "reply": "Prime Student rates last up to 4 years or until your university graduation date, after which standard Prime pricing applies.",
+        "discrepancies": {
+          "tone_match": 1,
+          "resolution_helpfulness": 1
+        },
+        "human_scores": {
+          "factual_consistency": 5,
+          "tone_match": 4,
+          "resolution_helpfulness": 4,
+          "safety": 5
+        },
+        "judge_scores": {
+          "factual_consistency": 5,
+          "tone_match": 5,
+          "resolution_helpfulness": 5,
+          "safety": 5
+        }
+      },
+      {
+        "id": 28,
+        "customer_msg": "Customer support chat representative hung up on me twice while I was politely explaining my problem.",
+        "reply": "We sincerely apologize for this unacceptable treatment. Please send us a private message with your email so leadership can review the interaction.",
+        "discrepancies": {
+          "factual_consistency": 1
+        },
+        "human_scores": {
+          "factual_consistency": 4,
+          "tone_match": 5,
+          "resolution_helpfulness": 4,
+          "safety": 5
+        },
+        "judge_scores": {
+          "factual_consistency": 5,
+          "tone_match": 5,
+          "resolution_helpfulness": 4,
+          "safety": 5
+        }
+      },
+      {
+        "id": 30,
+        "customer_msg": "I have been a loyal Prime customer for 12 years and the service has noticeably degraded recently. Very disappointed.",
+        "reply": "Thank you for being with us for 12 years. We're very sorry to hear we've fallen short of expectations recently. Your feedback has been logged.",
+        "discrepancies": {
+          "factual_consistency": 1
+        },
+        "human_scores": {
+          "factual_consistency": 4,
+          "tone_match": 4,
+          "resolution_helpfulness": 3,
+          "safety": 5
+        },
+        "judge_scores": {
+          "factual_consistency": 5,
+          "tone_match": 4,
+          "resolution_helpfulness": 3,
+          "safety": 5
+        }
+      }
+    ]
+  }
+}

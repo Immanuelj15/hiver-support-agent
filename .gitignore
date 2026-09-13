@@ -1,0 +1,29 @@
+# Raw large dataset
+twcs.csv
+data/raw/twcs.csv
+*.csv
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Environment variables & secrets
+.env
+*.env
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo

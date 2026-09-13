@@ -1,0 +1,56 @@
+{"text": "My package was supposed to arrive yesterday by 8pm but tracking has not updated since 3 days ago.", "intent": "order_delivery_delay"}
+{"text": "Carrier says delivered to front porch but I checked everywhere and there is no package.", "intent": "order_delivery_delay"}
+{"text": "Order is delayed for the third time this week, when can I expect it to actually ship?", "intent": "order_delivery_delay"}
+{"text": "Tracking number shows in transit for a week with no estimated delivery date.", "intent": "order_delivery_delay"}
+{"text": "I paid for Prime one-day shipping and it has been four days, where is my order?", "intent": "order_delivery_delay"}
+{"text": "The courier marked attempted delivery at 2pm but I was sitting in my living room all afternoon.", "intent": "order_delivery_delay"}
+{"text": "Package has been stuck at the local carrier facility since Monday with no movement.", "intent": "order_delivery_delay"}
+{"text": "I opened the box and the ceramic mug is completely shattered into tiny pieces.", "intent": "damaged_or_wrong_item"}
+{"text": "You sent me size small when I explicitly ordered an XL winter jacket.", "intent": "damaged_or_wrong_item"}
+{"text": "The package arrived unsealed and one of the two electronic cables is missing.", "intent": "damaged_or_wrong_item"}
+{"text": "Received a completely different book from what is shown on my invoice and order page.", "intent": "damaged_or_wrong_item"}
+{"text": "The laptop screen has lines running across it right out of the box, it is defective.", "intent": "damaged_or_wrong_item"}
+{"text": "Ordered blue sneakers and got bright red ones instead. Please replace with the right pair.", "intent": "damaged_or_wrong_item"}
+{"text": "Box was crushed and the liquid laundry detergent leaked all over the inside.", "intent": "damaged_or_wrong_item"}
+{"text": "I dropped off my return at UPS 5 days ago, how long until my refund appears on my card?", "intent": "return_and_refund"}
+{"text": "How do I print a prepaid return label if I do not have a printer at home?", "intent": "return_and_refund"}
+{"text": "I canceled the order within 10 minutes, when will the pending charge be refunded?", "intent": "return_and_refund"}
+{"text": "Can I return an opened cosmetics item within the 30-day return policy window?", "intent": "return_and_refund"}
+{"text": "My account shows refund completed yesterday but my bank account has no record of it.", "intent": "return_and_refund"}
+{"text": "Driver never showed up for the scheduled return pickup today. How do I reschedule?", "intent": "return_and_refund"}
+{"text": "I was only refunded half the amount for my returned headphones. Why was there a restocking fee?", "intent": "return_and_refund"}
+{"text": "I keep getting two-step verification codes on my phone but I am not trying to log in.", "intent": "account_security_and_login"}
+{"text": "I think my account was hacked, there are orders placed to an address in another country.", "intent": "account_security_and_login"}
+{"text": "I cannot sign into my account, it says my password was changed an hour ago without my consent.", "intent": "account_security_and_login"}
+{"text": "How do I remove an unauthorized device from my Amazon login session?", "intent": "account_security_and_login"}
+{"text": "Locked out of my account because I lost access to my registered phone number for OTP verification.", "intent": "account_security_and_login"}
+{"text": "Suspicious email claiming my Amazon account has been suspended unless I click a link.", "intent": "account_security_and_login"}
+{"text": "Someone changed the primary email address on my Amazon account and I can no longer access it.", "intent": "account_security_and_login"}
+{"text": "I noticed a $14.99 charge on my credit card from Amazon Prime but I canceled my membership last month.", "intent": "subscription_and_billing"}
+{"text": "Why did my Prime student discount expire without any advance notification?", "intent": "subscription_and_billing"}
+{"text": "I was charged for an Amazon Music Unlimited subscription I never signed up for.", "intent": "subscription_and_billing"}
+{"text": "Can I switch my Prime billing from monthly to annual to save money?", "intent": "subscription_and_billing"}
+{"text": "My credit card was declined for auto-renewal but my billing details are completely up to date.", "intent": "subscription_and_billing"}
+{"text": "Double billed for my Kindle Unlimited subscription on my October bank statement.", "intent": "subscription_and_billing"}
+{"text": "How do I turn off automatic renewal for my Prime video channel subscriptions?", "intent": "subscription_and_billing"}
+{"text": "My Fire TV stick is stuck on the loading logo and will not respond to the remote control.", "intent": "product_technical_issue"}
+{"text": "The Kindle app on my iPad crashes immediately every time I try to open a downloaded book.", "intent": "product_technical_issue"}
+{"text": "Echo Dot keeps saying it cannot connect to Wi-Fi even after rebooting the router multiple times.", "intent": "product_technical_issue"}
+{"text": "How do I deregister an old Kindle paperwhite and transfer my library to a new device?", "intent": "product_technical_issue"}
+{"text": "Prime Video streaming is giving error code 7031 on my web browser while playing HD movies.", "intent": "product_technical_issue"}
+{"text": "Fire tablet screen is completely unresponsive to touch after the latest software update.", "intent": "product_technical_issue"}
+{"text": "Alexa is having trouble understanding routines and smart plugs are showing offline in the app.", "intent": "product_technical_issue"}
+{"text": "Your delivery driver threw the heavy box over my 8-foot fence and damaged my rose garden.", "intent": "feedback_or_complaint"}
+{"text": "Customer service phone rep hung up on me twice while I was explaining my problem.", "intent": "feedback_or_complaint"}
+{"text": "Amazon packaging has become ridiculous, a tiny memory card arrived in a huge cardboard box with plastic air pillows.", "intent": "feedback_or_complaint"}
+{"text": "I am extremely disappointed with Prime recently, shipping is no longer reliable or two days.", "intent": "feedback_or_complaint"}
+{"text": "Driver didn't bother ringing the bell and left my expensive package in the pouring rain on the sidewalk.", "intent": "feedback_or_complaint"}
+{"text": "Your automated chatbot is a circular nightmare that never connects to a real person.", "intent": "feedback_or_complaint"}
+{"text": "Worst support experience ever. The agent gave conflicting information three times.", "intent": "feedback_or_complaint"}
+{"text": "Do you have any job openings in your Seattle fulfillment center or corporate headquarters?", "intent": "other"}
+{"text": "I will be contacting my lawyer and filing a formal complaint with the consumer protection bureau.", "intent": "other"}
+{"text": "Who is the CEO of Amazon and how can I send an executive escalation email to leadership?", "intent": "other"}
+{"text": "Does Amazon sell physical gift cards that work in Canada as well as the US store?", "intent": "other"}
+{"text": "Bonjour j'ai une question sur mon compte et je ne trouve pas le service client francais.", "intent": "other"}
+{"text": "Your corporation is destroying local retail and exploiting warehouse workers, shame on you.", "intent": "other"}
+{"text": "Can I invest in Amazon pre-IPO or buy direct shares without a brokerage account?", "intent": "other"}

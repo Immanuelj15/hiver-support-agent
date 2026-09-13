@@ -1,0 +1,13 @@
+# Sample Customer Inquiries for Batch Testing
+# Lines starting with # are ignored
+
+Where is my package? The tracking has not updated for 3 days.
+I opened the box and the glass coffee press is completely shattered.
+Someone hacked my account and ordered gift cards to an unknown address in Russia!
+Why was I charged $14.99 for Prime when I canceled my trial last week?
+I will be contacting my lawyer and filing a formal lawsuit against Amazon.
+My Fire TV stick is stuck in a boot loop showing the Amazon logo over and over.
+Can I return an opened mattress under the 100-night trial policy?
+Your delivery driver threw the heavy box over my fence and broke my flower pots!
+Bonjour, je voudrais savoir quand ma commande sera livree a Paris?
+How do I print a return label if I do not have a printer at home?
