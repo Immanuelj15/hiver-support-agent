@@ -33,27 +33,27 @@ We designed and built a verifiable, historically grounded support agent that:
 ### System Flow Diagram
 ```mermaid
 flowchart TD
-    A([👤 Customer Tweet]) --> B[1. Intent Classifier\n8 Empirical Classes + Calibrated Confidence]
+    A["👤 Customer Tweet"] --> B["1. Intent Classifier<br/>8 Empirical Classes + Calibrated Confidence"]
     
-    B --> C{Escalation Check 1\nCritical Risk Intent?}
-    C -->|Yes: account_security| ESC[🚨 ESCALATE TO HUMAN\nLog Reason & Risk Tag]
+    B --> C{"Escalation Check 1<br/>Critical Risk Intent?"}
+    C -->|Yes: account_security| ESC["🚨 ESCALATE TO HUMAN<br/>Log Reason & Risk Tag"]
     
-    C -->|No: Standard Intent| D[2. FAISS Semantic Retrieval\nSearch 4,000 Historical Amazon Pairs]
+    C -->|No: Standard Intent| D["2. FAISS Semantic Retrieval<br/>Search 4,000 Historical Amazon Pairs"]
     
-    D --> E{Escalation Check 2\nSimilarity >= 0.55?}
+    D --> E{"Escalation Check 2<br/>Similarity >= 0.55?"}
     E -->|No: Uncharted Case| ESC
     
-    E -->|Yes: Precedent Found| F{Dynamic Route Decider\nRisk=LOW & Conf>=0.85 & Sim>=0.65?}
+    E -->|Yes: Precedent Found| F{"Dynamic Route Decider<br/>Risk=LOW & Conf>=0.85 & Sim>=0.65?"}
     
-    F -->|Yes: Safe Local Tier| G1[Tier 1: Local Ollama\nmistral:latest]
-    F -->|No: Complex Tier| G2[Tier 2: Cloud Engine\nGroq gpt-oss-20b / Gemini]
+    F -->|Yes: Safe Local Tier| G1["Tier 1: Local Ollama<br/>mistral:latest"]
+    F -->|No: Complex Tier| G2["Tier 2: Cloud Engine<br/>Groq gpt-oss-20b / Gemini"]
     
-    G1 --> H[4. Post-Generation Safety Guard\nRegex Scan for Financial Promises]
+    G1 --> H["3. Post-Generation Safety Guard<br/>Regex Scan for Financial Promises"]
     G2 --> H
     
-    H --> I{Unverified Promise Found?}
+    H --> I{"Unverified Promise Found?"}
     I -->|Yes: Risky Claim| ESC
-    I -->|No: Verified| AUTO([✅ AUTO-REPLY TO CUSTOMER\nPublish Grounded Response with [link]])
+    I -->|No: Verified| AUTO["✅ AUTO-REPLY TO CUSTOMER<br/>Publish Grounded Response with verified link"]
 ```
 
 ---
