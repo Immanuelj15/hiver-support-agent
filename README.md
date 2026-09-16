@@ -56,6 +56,43 @@ flowchart TD
     I -->|No: Verified| AUTO["✅ AUTO-REPLY TO CUSTOMER<br/>Publish Grounded Response with verified link"]
 ```
 
+### Conversation Lifecycle Sequence Diagram
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Customer as 👤 Customer
+    participant Agent as ⚙️ SupportAgent
+    participant Classifier as 🏷️ IntentClassifier
+    participant Retriever as 📚 FAISS VectorStore
+    participant Policy as 🛡️ EscalationPolicy
+    participant LLM as 🤖 Generator (Local/Cloud)
+    actor Human as 👨‍💼 Human Specialist
+
+    Customer->>Agent: "Where is my parcel? Delivered status but not in mailbox."
+    Agent->>Classifier: Classify intent and confidence
+    Classifier-->>Agent: intent="order_delivery_delay" (conf=0.95)
+
+    Agent->>Retriever: Search top-3 historical cases (MiniLM-L6-v2)
+    Retriever-->>Agent: Returns top matches (sim=0.8124)
+
+    Agent->>Policy: Evaluate risk, confidence, and similarity
+    alt If Critical Risk, Legal Threat, or Sim < 0.55
+        Policy-->>Agent: Decision: ESCALATE
+        Agent->>Human: Route ticket to human specialist queue with reason log
+    else If Safe and Grounded (Sim >= 0.55)
+        Policy-->>Agent: Decision: AUTO_HANDLE
+        Agent->>LLM: Generate grounded reply using top historical cases
+        LLM-->>Agent: Draft response with verified link
+        Agent->>Policy: Audit draft for unverified financial promises
+        alt If Unauthorized Promise Detected
+            Policy-->>Agent: Override: ESCALATE (Financial Safety Trigger)
+            Agent->>Human: Route ticket to human specialist queue
+        else If All Checks Pass
+            Agent-->>Customer: ✅ Publish verified, grounded response
+        end
+    end
+```
+
 ---
 
 ## 4. Dataset
