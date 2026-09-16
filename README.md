@@ -103,9 +103,9 @@ sequenceDiagram
 
 ---
 
-## 🚀 Quickstart: Run in < 15 Minutes
+## 🚀 Quickstart: Run in < 5 Minutes
 
-### 1. Installation
+### 1. Installation & Environment Setup
 ```bash
 git clone https://github.com/Immanuelj15/hiver-support-agent.git
 cd hiver-support-agent
@@ -118,12 +118,14 @@ pip install -r requirements.txt
   ```powershell
   # Windows PowerShell
   $env:GEMINI_API_KEY="your-gemini-api-key"
+  # Linux/macOS
+  export GEMINI_API_KEY="your-gemini-api-key"
   ```
 
 * **Option B: 100% Local & Free with [Ollama](https://ollama.ai/)**
   ```powershell
-  # Simply add the --ollama flag (runs Mistral or Phi-3 on your own computer)
-  python src/pipeline.py --ollama --message "Where is my parcel?"
+  # Runs Mistral or Phi-3 completely offline on your local computer
+  python scripts/run_demo.py --provider ollama --message "Where is my parcel?"
   ```
 
 ---
@@ -132,51 +134,112 @@ pip install -r requirements.txt
 
 ### 1. Interactive Chat Mode (Easiest for Non-Tech Users)
 Type questions one by one like a real customer without restarting the script:
-```powershell
-python src/pipeline.py --interactive
+```bash
+python scripts/run_demo.py --interactive
 ```
-*(Or with local Ollama: `python src/pipeline.py --ollama --interactive`)*
+*(Or with local Ollama: `python scripts/run_demo.py --provider ollama --interactive`)*
 
 ```text
-################################################################################
-INTERACTIVE SUPPORT AGENT MODE
-Type any customer inquiry and press Enter. Type 'exit' to stop.
-################################################################################
+======================================================================
+Hiver AI Support Agent - Interactive Session
+Provider: cloud | Model: gemini-3.6-flash
+Type your customer message below (or 'exit' / 'quit' to end):
+======================================================================
 
-[Inquiry 1] Enter message: My package never arrived yesterday.
---> Intent: order_delivery_delay | Action: AUTO (Safe self-serve tracking link)
+Customer > Where is my package? It was supposed to be here yesterday.
 
-[Inquiry 2] Enter message: Someone changed my password and hacked my account!
---> Intent: account_security_and_login | Action: ESCALATE (High-risk security)
+======================================================================
+AI CUSTOMER SUPPORT AGENT EXECUTION
+======================================================================
+Customer Inquiry:      Where is my package? It was supposed to be here yesterday.
+Predicted Intent:      order_delivery_delay (Confidence: 0.98)
+Retrieval Similarity:  0.9081
+Pipeline Action:       AUTO_HANDLE (Risk: LOW)
+Escalation Flag:       NO (Auto-handled)
+Engine:                cloud (gemini-3.6-flash)
+----------------------------------------------------------------------
+Draft Response:
+I'm so sorry about the delay with your parcel! You can track live transit
+updates directly under Your Orders here: [link].
+----------------------------------------------------------------------
+Top Retrieved Grounding Case:
+  [Ref: 46519_46517] (Sim: 0.9081)
+  Customer: where is my parcel that should have been delivered yesterday?...
+  Agent:    i am sorry about the delay! What information is provided on your tracking? ...
+======================================================================
 ```
 
 ### 2. Batch Test from a File
 Test 10 diverse sample inquiries at once:
-```powershell
-python src/pipeline.py --file data/sample_test_queries.txt
+```bash
+python scripts/run_demo.py --file data/samples/sample_queries.txt
 ```
 
-### 3. Run the Full 150-Sample Evaluation Benchmark
-Evaluates the entire system against two baselines over our hand-labeled golden dataset:
-```powershell
-python eval/run_eval.py --n 150
+### 3. Single Query Execution (CLI)
+```bash
+python scripts/run_demo.py --message "Someone placed 5 orders on my account using a stolen credit card!"
 ```
-*Produces `eval/results.json` and `eval/report.md` with full performance metrics.*
 
 ---
 
-## 📊 Benchmark Results (Hand-Labeled Golden Set $N=150$)
+## 📊 Running Classical Baselines & Full Evaluation
 
-| Performance Dimension | Production AI Pipeline | Classical Baseline (TF-IDF) | Naive Baseline (Always Escalate) |
-| :--- | :---: | :---: | :---: |
-| **Intent Accuracy** | **89.3%** | 64.7% | 16.0% |
-| **Intent Macro-F1** | **0.884** | 0.591 | 0.034 |
-| **Safety Recall (Escalations)** | **92.8%** | 17.4% (Dangerous) | 100.0% |
-| **False Negative Rate (Hazards Missed)** | **7.2%** | 82.6% (Unacceptable) | 0.0% |
-| **Auto-Handling Rate** | **49.3%** | 85.3% | 0.0% |
-| **Top-1 Retrieval Accuracy** | **88.0%** | N/A | N/A |
-| **LLM Judge Score (1 to 5 scale)** | **4.38 / 5.0** | 2.10 / 5.0 | 1.00 / 5.0 |
-| **Human Agreement ($\kappa_w$)** | **0.9069** | N/A | N/A |
+### 1. Baseline 1: Majority Class (`order_delivery_delay`)
+```bash
+python baselines/majority.py
+```
+*Measures performance when always predicting the most frequent class (Accuracy: 17.50%, Macro F1: 0.0372).*
+
+### 2. Baseline 2: TF-IDF + Logistic Regression
+```bash
+python baselines/tfidf_logistic.py
+```
+*Trains an n-gram TF-IDF model on leakage-free training data and evaluates on the golden set (Accuracy: 68.00%, Macro F1: 0.6692). Generates confusion matrix to `results/figures/confusion_matrix.png`.*
+
+### 3. Automated Test Suite (`pytest`)
+```bash
+pytest tests/ -v
+```
+*Runs all 16 unit and integration tests across classification, FAISS retrieval, escalation rules, and end-to-end agent orchestration.*
+
+### 4. Full Evaluation Benchmark & LLM Judge
+```bash
+python src/evaluation/run_all.py
+```
+*Evaluates against the N=200 stratified golden benchmark, computes intent accuracy, escalation safety precision/recall, and LLM-as-a-Judge quality metrics. Outputs `results/evaluation_results.json` and `results/metrics.json`.*
+
+---
+
+## 📊 Summary of Baseline Comparison
+
+| System | Intent Accuracy | Macro F1 | Escalation Precision | Escalation Recall | p95 Latency |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Baseline 1: Majority Class** | 17.50% | 0.0372 | N/A (predicts 'delay') | N/A | < 1 ms |
+| **Baseline 2: TF-IDF + Logistic Reg** | 68.00% | 0.6692 | N/A (classifier only) | N/A | ~1.2 ms |
+| **Grounded LLM Agent (RAG + Guardrails)** | **89.50%** | **0.8865** | **94.20%** | **96.80%** | **~480 ms** |
+
+---
+
+## 🛠️ Make Commands
+
+For convenience, standard targets are available via `make`:
+- `make setup`: Install dependencies from `requirements.txt`.
+- `make prepare-data`: Clean threads and build knowledge corpus with leakage checks.
+- `make index`: Build the FAISS dense semantic index from the knowledge corpus.
+- `make baseline`: Run Baseline 2 (TF-IDF + Logistic Regression).
+- `make demo`: Launch the interactive terminal demonstration.
+- `make test`: Run the full `pytest` suite.
+- `make evaluate`: Run the complete evaluation benchmark.
+
+---
+
+## 📚 Deliverables & Documentation
+
+- 📄 **[REPORT.md](REPORT.md)**: Exhaustive 6-page technical report covering all 13 required sections, empirical results table, failure analysis, and the critical reflection: *"What is misleading about my headline number?"*
+- 📝 **[DECISION_LOG.md](DECISION_LOG.md)**: 15 structured architectural decisions detailing alternatives considered, trade-offs, and rationale.
+- 🎯 **[INTERVIEW_NOTES.md](INTERVIEW_NOTES.md)**: Live interview defense guide answering tough questions on ML baselines, RAG vs fine-tuning, deterministic safety, and scaling to 1M messages/day.
+- 🏷️ **[docs/intent_taxonomy.md](docs/intent_taxonomy.md)**: Formal specification of the 8 empirical intents, positive/negative examples, and escalation boundaries.
+- 🔬 **[docs/golden_set_methodology.md](docs/golden_set_methodology.md)**: Quota sampling methodology, edge-case breakdown (sarcasm, multi-intent, prompt injections, hazardous materials), and annotation guidelines.
 
 ---
 
@@ -184,37 +247,49 @@ python eval/run_eval.py --n 150
 
 ```text
 hiver-support-agent/
-├── README.md                  <- You are here (visual guide & quickstart)
-├── report.md                  <- 6-page comprehensive technical engineering report
-├── decision_log.md            <- 12 architectural decisions (what, why, trade-offs)
+├── README.md                  <- Visual guide, diagrams, quickstart & interview defense
+├── REPORT.md                  <- 6-page comprehensive technical engineering report
+├── DECISION_LOG.md            <- 15 architectural decisions (what, why, trade-offs)
+├── INTERVIEW_NOTES.md         <- Live defense Q&A guide (architecture, ML, scale, flaws)
+├── Makefile                   <- Automation commands (setup, index, demo, test, evaluate)
 ├── requirements.txt           <- Pinned dependencies
+├── configs/
+│   └── config.yaml            <- Central configuration (models, thresholds, intents)
+├── docs/
+│   ├── intent_taxonomy.md     <- 8 empirical intents specification & boundaries
+│   └── golden_set_methodology.md <- Stratified sampling methodology (N=200)
 ├── data/
-│   ├── sample_test_queries.txt<- 10 sample customer queries for testing
-│   └── processed/
-│       ├── threads.jsonl          <- 13,589 clean conversation threads
-│       ├── intents_labeled.jsonl  <- Seed examples per intent
-│       └── embeddings_cache.npz   <- 4,000-case pre-computed semantic index
-├── golden_set/
-│   ├── golden_150.jsonl       <- 150 hand-labeled stratified evaluation set
-│   └── sampling_notes.md      <- Stratification quotas and exclusion rules
+│   ├── raw/                   <- twcs.csv (gitignored)
+│   ├── processed/             <- threads.jsonl, knowledge_corpus.jsonl, faiss_index.bin
+│   ├── golden/                <- golden_set.jsonl (200 stratified benchmark items)
+│   └── samples/               <- sample_queries.txt
 ├── src/
-│   ├── config.py              <- Model configurations (Gemini/OpenAI/Ollama)
-│   ├── ingest.py              <- Thread reconstruction & text cleaning
-│   ├── intent_classifier.py   <- Few-Shot classifier + classical ML baseline
-│   ├── retriever.py           <- Intent-partitioned semantic RAG index
-│   ├── reply_agent.py         <- Grounded few-shot reply drafter
-│   ├── escalation.py          <- Deterministic multi-tier escalation policy
-│   └── pipeline.py            <- End-to-end inference orchestrator
-└── eval/
-    ├── label_cli.py           <- Interactive golden set annotation CLI
-    ├── metrics.py             <- Automated evaluation metrics
-    ├── llm_judge.py           <- Rubric-based 4-dimension LLM judge
-    ├── human_agreement.py     <- Quadratic weighted kappa validation
-    ├── baselines.py           <- Trivial & Simple baseline implementations
-    └── run_eval.py            <- Unified evaluation runner
+│   ├── data/                  <- Chunked loader, cleaner, conversation splitter
+│   ├── intents/               <- Taxonomy, confidence calibration, classifier
+│   ├── retrieval/             <- SentenceTransformers, FAISS vector store, retriever
+│   ├── llm/                   <- Abstract LLM provider, OllamaProvider, CloudLLMProvider
+│   ├── generation/            <- Grounded prompt templates, response generator
+│   ├── escalation/            <- Deterministic policy, safety regexes, decision schema
+│   ├── agent/                 <- Unified SupportAgent coordinator
+│   └── evaluation/            <- Intent metrics, reply metrics, LLM judge, agreement
+├── baselines/
+│   ├── majority.py            <- Baseline 1: Majority Class ('order_delivery_delay')
+│   └── tfidf_logistic.py      <- Baseline 2: TF-IDF + Balanced Logistic Regression
+├── tests/
+│   ├── test_classifier.py     <- Unit tests for classifier & confidence calibration
+│   ├── test_retrieval.py      <- Unit tests for FAISS index & similarity search
+│   ├── test_escalation.py     <- Unit tests for deterministic safety & financial regex
+│   └── test_agent.py          <- Integration tests for end-to-end agent pipeline
+└── results/
+    ├── figures/
+    │   └── confusion_matrix.png <- Confusion matrix for Baseline 2
+    ├── baseline_results.json  <- Empirical baseline metrics
+    ├── evaluation_results.json<- Detailed benchmark predictions & judge scores
+    └── metrics.json           <- Summary evaluation metrics
 ```
 
 ---
 
 ## 🛡️ License
 This project is open-source and available under the [MIT License](LICENSE).
+

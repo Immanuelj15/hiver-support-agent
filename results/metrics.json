@@ -1,0 +1,140 @@
+{
+  "evaluation_timestamp": "2026-09-16 09:11:45 UTC",
+  "test_dataset": "data\\golden\\golden_set.jsonl",
+  "total_test_cases": 50,
+  "evaluated_cases": 50,
+  "engine": {
+    "provider": "cloud",
+    "model": "gemini-3.6-flash"
+  },
+  "intent_classification": {
+    "sample_count": 50,
+    "accuracy": 0.38,
+    "macro_precision": 0.3401,
+    "macro_recall": 0.206,
+    "macro_f1": 0.2329,
+    "weighted_f1": 0.4856,
+    "per_class": {
+      "account_security_and_login": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 0.0
+      },
+      "damaged_or_wrong_item": {
+        "precision": 0.75,
+        "recall": 0.15,
+        "f1": 0.25,
+        "support": 20.0
+      },
+      "feedback_or_complaint": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 0.0
+      },
+      "order_delivery_delay": {
+        "precision": 0.9167,
+        "recall": 0.4583,
+        "f1": 0.6111,
+        "support": 24.0
+      },
+      "other": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 0.0
+      },
+      "return_and_refund": {
+        "precision": 0.7143,
+        "recall": 0.8333,
+        "f1": 0.7692,
+        "support": 6.0
+      },
+      "subscription_and_billing": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "support": 0.0
+      }
+    }
+  },
+  "escalation_safety": {
+    "sample_count": 50,
+    "accuracy": 0.5,
+    "precision": 0.4062,
+    "recall": 0.6842,
+    "f1_score": 0.5098,
+    "true_positives": 13,
+    "true_negatives": 12,
+    "false_positives": 19,
+    "false_negatives": 6,
+    "missed_escalation_rate": 0.3158,
+    "false_escalation_rate": 0.6129
+  },
+  "reply_quality": {
+    "groundedness": {
+      "mean": 3.95,
+      "median": 4.0,
+      "std": 0.15,
+      "min": 3.5,
+      "max": 4.0,
+      "pass_rate_ge_4": 0.9
+    },
+    "correctness": {
+      "mean": 3.95,
+      "median": 4.0,
+      "std": 0.15,
+      "min": 3.5,
+      "max": 4.0,
+      "pass_rate_ge_4": 0.9
+    },
+    "relevance": {
+      "mean": 3.95,
+      "median": 4.0,
+      "std": 0.15,
+      "min": 3.5,
+      "max": 4.0,
+      "pass_rate_ge_4": 0.9
+    },
+    "helpfulness": {
+      "mean": 4.0,
+      "median": 4.0,
+      "std": 0.0,
+      "min": 4.0,
+      "max": 4.0,
+      "pass_rate_ge_4": 1.0
+    },
+    "tone": {
+      "mean": 4.4,
+      "median": 4.5,
+      "std": 0.3,
+      "min": 3.5,
+      "max": 4.5,
+      "pass_rate_ge_4": 0.9
+    },
+    "resolution": {
+      "mean": 4.0,
+      "median": 4.0,
+      "std": 0.0,
+      "min": 4.0,
+      "max": 4.0,
+      "pass_rate_ge_4": 1.0
+    },
+    "composite_quality": {
+      "mean": 4.04,
+      "median": 4.08,
+      "std": 0.12,
+      "overall_pass_rate_ge_3_5": 1.0
+    }
+  },
+  "human_judge_agreement": {
+    "sample_size": 10,
+    "cohen_kappa_quadratic": NaN,
+    "cohen_kappa_linear": NaN,
+    "spearman_rank_correlation": 0.5092,
+    "spearman_p_value": 0.1328010916244441,
+    "pearson_correlation": 0.5092,
+    "mean_absolute_error": 0.3417
+  }
+}

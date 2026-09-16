@@ -1,0 +1,46 @@
+# Hiver AI Customer Support Agent Configuration
+project:
+  name: "Hiver AI Support Agent"
+  version: "2.0.0"
+  random_seed: 42
+  target_brand: "AmazonHelp"
+
+paths:
+  raw_data: "data/raw/twcs.csv"
+  processed_threads: "data/processed/threads.jsonl"
+  knowledge_corpus: "data/processed/knowledge_corpus.jsonl"
+  golden_set: "data/golden/golden_set.jsonl"
+  legacy_golden_set: "golden_set/golden_150.jsonl"
+  vector_index: "data/processed/faiss_index.bin"
+  vector_metadata: "data/processed/vector_metadata.json"
+  embeddings_cache: "data/processed/embeddings_cache.npz"
+  sample_queries: "data/samples/sample_queries.txt"
+  baseline_results: "results/baseline_results.json"
+  evaluation_results: "results/evaluation_results.json"
+  confusion_matrix_fig: "results/figures/confusion_matrix.png"
+
+models:
+  embedding_model: "sentence-transformers/all-MiniLM-L6-v2"
+  embedding_dim: 384
+  ollama_default_model: "mistral:latest"
+  ollama_base_url: "http://localhost:11434/v1"
+  cloud_default_model: "gemini-3.6-flash"
+
+thresholds:
+  escalation_similarity_min: 0.55
+  intent_confidence_min: 0.65
+  top_k_retrieval: 3
+
+intents:
+  - "order_delivery_delay"
+  - "damaged_or_wrong_item"
+  - "return_and_refund"
+  - "account_security_and_login"
+  - "subscription_and_billing"
+  - "product_technical_issue"
+  - "feedback_or_complaint"
+  - "other"
+
+sensitive_intents:
+  - "account_security_and_login"
+  - "other"
