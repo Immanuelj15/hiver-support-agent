@@ -1,0 +1,42 @@
+[
+  {
+    "variant": "Variant A: Zero-Shot (No RAG, No Guardrails)",
+    "intent_macro_f1": 0.9333,
+    "reply_quality": 4.53,
+    "escalation_f1": 0.0,
+    "false_auto_handle_rate_pct": 100.0,
+    "p95_latency_ms": 11228.4,
+    "cloud_usage_pct": 100.0,
+    "estimated_cost_per_1k": 0.12
+  },
+  {
+    "variant": "Variant B: RAG Only (No Guardrails)",
+    "intent_macro_f1": 0.9333,
+    "reply_quality": 4.56,
+    "escalation_f1": 0.0,
+    "false_auto_handle_rate_pct": 100.0,
+    "p95_latency_ms": 8149.9,
+    "cloud_usage_pct": 100.0,
+    "estimated_cost_per_1k": 0.12
+  },
+  {
+    "variant": "Variant C: Cloud Only Agent (RAG + Guardrails + Groq)",
+    "intent_macro_f1": 0.9333,
+    "reply_quality": 4.71,
+    "escalation_f1": 0.625,
+    "false_auto_handle_rate_pct": 28.57,
+    "p95_latency_ms": 17785.5,
+    "cloud_usage_pct": 100.0,
+    "estimated_cost_per_1k": 0.12
+  },
+  {
+    "variant": "Variant D: Full Hybrid Agent (Local + Cloud Routing)",
+    "intent_macro_f1": 0.9333,
+    "reply_quality": 4.67,
+    "escalation_f1": 0.625,
+    "false_auto_handle_rate_pct": 28.57,
+    "p95_latency_ms": 67727.3,
+    "cloud_usage_pct": 73.3,
+    "estimated_cost_per_1k": 0.088
+  }
+]

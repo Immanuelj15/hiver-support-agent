@@ -39,7 +39,8 @@ def compute_escalation_metrics(
         "true_positives": int(tp),
         "true_negatives": int(tn),
         "false_positives": int(fp),
-        "false_negatives": int(fn),
         "missed_escalation_rate": round(float(missed_rate), 4),
+        "false_auto_handle_rate": round(float(missed_rate), 4),
         "false_escalation_rate": round(float(false_alarm_rate), 4)
     }
+

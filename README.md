@@ -180,43 +180,74 @@ python scripts/run_demo.py --file data/samples/sample_queries.txt
 python scripts/run_demo.py --message "Someone placed 5 orders on my account using a stolen credit card!"
 ```
 
+### 3. Live 2-Tier Dynamic Hybrid Mode (Ollama + Groq Cloud)
+```bash
+# High-confidence routine query routes to local Ollama (100% free)
+python scripts/run_demo.py --hybrid --message "Where is my parcel? It was supposed to be here yesterday."
+
+# High-risk / legal dispute routes to Cloud LLM (Groq)
+python scripts/run_demo.py --hybrid --message "I am contacting my attorney and suing Amazon for an unauthorized $500 charge!"
+```
+
 ---
 
-## 📊 Running Classical Baselines & Full Evaluation
+## 📊 Running Evaluations, Sweeps & Ablation Studies
 
-### 1. Baseline 1: Majority Class (`order_delivery_delay`)
+### 1. Dedicated Retrieval Benchmark (Recall@K & MRR)
 ```bash
-python baselines/majority.py
+python -m src.evaluation.retrieval_metrics
 ```
-*Measures performance when always predicting the most frequent class (Accuracy: 17.50%, Macro F1: 0.0372).*
+*Evaluates dense FAISS retrieval across 200 golden queries against 4,000 resolved cases:*
+- **Recall@1**: 55.00%
+- **Recall@3**: 78.50%
+- **Recall@5**: 88.00%
+- **Precision@3**: 51.33%
+- **Mean Reciprocal Rank (MRR)**: 0.6775
+- **Mean Top-1 Cosine Similarity**: 0.5790
+*Saves to `results/retrieval_metrics.json`.*
 
-### 2. Baseline 2: TF-IDF + Logistic Regression
+### 2. Empirical Escalation Threshold Sweep
 ```bash
+python -m src.evaluation.evaluate_thresholds
+```
+*Sweeps confidence and similarity thresholds from 0.40 to 0.80, computing False Auto-Handle Rate and human escalation volume. Saves to `results/escalation_thresholds.csv`.*
+
+### 3. Component Ablation Study & Hybrid Evaluation
+```bash
+python -m src.evaluation.evaluate_ablation_and_hybrid
+```
+*Evaluates all 4 system variants (Zero-Shot, RAG Only, Cloud Agent, Full Hybrid) measuring quality, safety, and cloud calls avoided. Saves to `results/ablation_results.json` and `results/hybrid_metrics.json`.*
+
+### 4. Classical Baselines (Majority Class & TF-IDF)
+```bash
+# Baseline 1: Majority Class
+python baselines/majority.py
+
+# Baseline 2: TF-IDF (1-2 gram) + Balanced Logistic Regression
 python baselines/tfidf_logistic.py
 ```
-*Trains an n-gram TF-IDF model on leakage-free training data and evaluates on the golden set (Accuracy: 68.00%, Macro F1: 0.6692). Generates confusion matrix to `results/figures/confusion_matrix.png`.*
+*Baseline 1 Macro F1: 0.0372; Baseline 2 Macro F1: 0.6692. Generates confusion matrix to `results/figures/confusion_matrix.png`.*
 
-### 3. Automated Test Suite (`pytest`)
+### 5. Automated Pytest Suite
 ```bash
 pytest tests/ -v
 ```
-*Runs all 16 unit and integration tests across classification, FAISS retrieval, escalation rules, and end-to-end agent orchestration.*
-
-### 4. Full Evaluation Benchmark & LLM Judge
-```bash
-python src/evaluation/run_all.py
-```
-*Evaluates against the N=200 stratified golden benchmark, computes intent accuracy, escalation safety precision/recall, and LLM-as-a-Judge quality metrics. Outputs `results/evaluation_results.json` and `results/metrics.json`.*
+*Runs all 20 unit and integration tests across intent classification, FAISS retrieval, escalation rules, no-evidence safety, and hybrid routing (20/20 passed).*
 
 ---
 
-## 📊 Summary of Baseline Comparison
+## 📊 Summary of Baseline & Ablation Comparison
 
-| System | Intent Accuracy | Macro F1 | Escalation Precision | Escalation Recall | p95 Latency |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Baseline 1: Majority Class** | 17.50% | 0.0372 | N/A (predicts 'delay') | N/A | < 1 ms |
-| **Baseline 2: TF-IDF + Logistic Reg** | 68.00% | 0.6692 | N/A (classifier only) | N/A | ~1.2 ms |
-| **Grounded LLM Agent (RAG + Guardrails)** | **89.50%** | **0.8865** | **94.20%** | **96.80%** | **~480 ms** |
+| System Variant | Intent Macro F1 | Reply Quality (1–5) | Escalation F1 | False Auto-Handle Rate % | p95 Latency | Cloud Usage % | Est. Cost / 1k |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Baseline 1: Majority Class** | 0.0372 | N/A | N/A | N/A | < 1 ms | 0% | $0.00 |
+| **Baseline 2: TF-IDF + Logistic Reg** | 0.6692 | N/A | N/A | N/A | ~1.2 ms | 0% | $0.00 |
+| **Variant A: Zero-Shot (No RAG / Rules)** | 0.9333 | 4.53 | 0.0000 | 100.00% *(Fatal)* | 11,228 ms | 100% | $0.120 |
+| **Variant B: RAG Only (No Rules)** | 0.9333 | 4.56 | 0.0000 | 100.00% *(Fatal)* | 8,149 ms | 100% | $0.120 |
+| **Variant C: Cloud Agent (RAG + Rules)** | **0.9333** | **4.71** | **0.6250** | **28.57%** | **17,785 ms** | 100% | $0.120 |
+| **Variant D: Full Hybrid Agent** | **0.9333** | **4.67** | **0.6250** | **28.57%** | 67,727 ms | **73.3%** | **$0.088** |
+
+*Hybrid Routing Benefit: **26.67% of cloud calls avoided** with zero safety regression.*
 
 ---
 
@@ -230,6 +261,7 @@ For convenience, standard targets are available via `make`:
 - `make demo`: Launch the interactive terminal demonstration.
 - `make test`: Run the full `pytest` suite.
 - `make evaluate`: Run the complete evaluation benchmark.
+
 
 ---
 

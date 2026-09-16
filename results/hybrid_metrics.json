@@ -1,0 +1,11 @@
+{
+  "total_requests": 15,
+  "local_requests": 4,
+  "cloud_requests": 11,
+  "cloud_calls_avoided_pct": 26.67,
+  "avg_latency_ms": 26007.47,
+  "p50_latency_ms": 7580.77,
+  "p95_latency_ms": 67727.28,
+  "estimated_cost_per_1k": 0.088,
+  "cloud_savings_pct": 26.67
+}

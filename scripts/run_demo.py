@@ -22,36 +22,39 @@ if hasattr(sys.stdout, "reconfigure"):
         pass
 
 from src.agent.support_agent import SupportAgent
+from src.agent.hybrid_agent import HybridSupportAgent
 from src.llm.factory import get_llm_provider
 
 def format_terminal_output(res: dict) -> None:
     """Print readable audit trail safe for all terminal encodings."""
-
     print("\n" + "=" * 70)
     print("AI CUSTOMER SUPPORT AGENT EXECUTION")
     print("=" * 70)
     print(f"Customer Inquiry:      {res['customer_msg']}")
     print(f"Predicted Intent:      {res['intent']} (Confidence: {res['intent_confidence']:.2f})")
-    print(f"Retrieval Similarity:  {res['retrieval_similarity']:.4f}")
-    print(f"Pipeline Action:       {res['action']} (Risk: {res['risk_level']})")
+    print(f"Retrieval Score:       {res.get('retrieval_score', res.get('retrieval_similarity', 0.0)):.4f}")
+    print(f"Decision:              {res['decision']} (Risk: {res['risk_level']})")
     print(f"Escalation Flag:       {'YES (Escalate to human)' if res['should_escalate'] else 'NO (Auto-handled)'}")
     if res['should_escalate']:
-        print(f"Escalation Reason:     {res['escalation_reason']}")
+        print(f"Escalation Reason:     {res['decision_reason']}")
         if res.get('triggered_rule'):
             print(f"Triggered Rule:        {res['triggered_rule']}")
+    if "routed_tier" in res:
+        print(f"Hybrid Routed Tier:    {res['routed_tier'].upper()} (Cloud Call Avoided: {'YES (100% Free Local)' if res.get('cloud_call_avoided') else 'NO (Cloud LLM)'})")
     print(f"Engine:                {res['provider']} ({res['model']})")
     print("-" * 70)
     print(f"Draft Response:\n{res['reply']}")
     print("-" * 70)
-    if res.get("retrieved_evidence"):
+    if res.get("evidence"):
         print(f"Top Retrieved Grounding Case:")
-        ev = res["retrieved_evidence"][0]
+        ev = res["evidence"][0]
         print(f"  [Ref: {ev.get('conversation_id')}] (Sim: {ev.get('similarity'):.4f})")
-        clean_cust = ev.get('customer_msg', '').replace('\n', ' ')[:75]
-        clean_ans = ev.get('agent_reply', '').replace('\n', ' ')[:75]
+        clean_cust = ev.get('customer_message', '').replace('\n', ' ')[:75]
+        clean_ans = ev.get('brand_reply', '').replace('\n', ' ')[:75]
         print(f"  Customer: {clean_cust}...")
         print(f"  Agent:    {clean_ans}...")
     print("=" * 70 + "\n")
+
 
 def run_interactive(agent: SupportAgent) -> None:
     """Run interactive terminal REPL."""
@@ -84,14 +87,20 @@ def main():
     parser.add_argument("--message", type=str, help="Single customer message string")
     parser.add_argument("--file", type=str, help="Path to text file containing one query per line")
     parser.add_argument("--interactive", action="store_true", help="Launch interactive chat session")
+    parser.add_argument("--hybrid", action="store_true", help="Use dynamic 2-tier hybrid router (Ollama + Cloud)")
     parser.add_argument("--provider", type=str, choices=["ollama", "cloud", "groq"], help="Override LLM provider")
+
     parser.add_argument("--model", type=str, help="Override LLM model name")
     parser.add_argument("--json", action="store_true", help="Output full JSON instead of formatted text")
     args = parser.parse_args()
 
     # Instantiate provider and agent
-    llm = get_llm_provider(provider=args.provider, model=args.model)
-    agent = SupportAgent(llm_provider=llm)
+    if args.hybrid:
+        agent = HybridSupportAgent()
+    else:
+        llm = get_llm_provider(provider=args.provider, model=args.model)
+        agent = SupportAgent(llm_provider=llm)
+
 
     if args.interactive:
         run_interactive(agent)

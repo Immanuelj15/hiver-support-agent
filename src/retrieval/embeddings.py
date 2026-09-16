@@ -5,14 +5,28 @@ Wrapper for SentenceTransformer embedding models.
 Uses all-MiniLM-L6-v2 by default with L2 normalization for cosine similarity search.
 """
 
+import os
 from typing import List, Union
 import numpy as np
+
+# Prefer local cached models to avoid DNS connection timeouts
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
+os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
+
 from sentence_transformers import SentenceTransformer
 
 class EmbeddingModel:
     def __init__(self, model_name: str = "sentence-transformers/all-MiniLM-L6-v2"):
         self.model_name = model_name
-        self._model = SentenceTransformer(model_name)
+        try:
+            self._model = SentenceTransformer(model_name, local_files_only=True)
+        except Exception:
+            # If local_files_only strictly fails, allow online lookup
+            os.environ.pop("HF_HUB_OFFLINE", None)
+            os.environ.pop("TRANSFORMERS_OFFLINE", None)
+            self._model = SentenceTransformer(model_name)
+
+
 
     @property
     def embedding_dim(self) -> int:

@@ -1,0 +1,175 @@
+{
+  "total_queries_evaluated": 200,
+  "recall_at_1": 0.55,
+  "recall_at_3": 0.785,
+  "recall_at_5": 0.88,
+  "precision_at_3": 0.5133,
+  "mrr": 0.6775,
+  "mean_top1_similarity": 0.579,
+  "p50_similarity": 0.5878,
+  "p95_similarity": 0.7438,
+  "min_similarity": 0.2879,
+  "total_retrieval_failures": 154,
+  "sample_failures": [
+    {
+      "id": 2,
+      "query": "Carrier says delivered to front porch at 3 PM but I was home and there is no box anywhere.",
+      "gold_intent": "order_delivery_delay",
+      "top1_similarity": 0.6096,
+      "retrieved_intents": [
+        "damaged_or_wrong_item",
+        "order_delivery_delay",
+        "order_delivery_delay"
+      ],
+      "retrieved_cases": [
+        {
+          "conversation_id": "80582_80584",
+          "snippet": "I contacted you guys via the link above and the rep told me they contacted ",
+          "similarity": 0.6096,
+          "intent": "damaged_or_wrong_item"
+        },
+        {
+          "conversation_id": "69831_69832",
+          "snippet": "Apparently it was 'delivered to resident at 3:33pm' yesterday (Th 30/11) -T",
+          "similarity": 0.6078,
+          "intent": "order_delivery_delay"
+        },
+        {
+          "conversation_id": "65859_65857",
+          "snippet": "Amazon.de it says \"delivered\" in the website but the carrier it is still \"o",
+          "similarity": 0.6052,
+          "intent": "order_delivery_delay"
+        }
+      ],
+      "failure_type": "intent_mismatch"
+    },
+    {
+      "id": 4,
+      "query": "Tracking says 'attempted delivery - business closed' but this is my private residence and I was in the living room.",
+      "gold_intent": "order_delivery_delay",
+      "top1_similarity": 0.6048,
+      "retrieved_intents": [
+        "account_security_and_login",
+        "product_technical_issue",
+        "order_delivery_delay"
+      ],
+      "retrieved_cases": [
+        {
+          "conversation_id": "30496_30495",
+          "snippet": "Someone opened my amazon package, and retaped it. I don't know if it was th",
+          "similarity": 0.6048,
+          "intent": "account_security_and_login"
+        },
+        {
+          "conversation_id": "30003_30001",
+          "snippet": "Despite the fact that I don't actually have my delivery, insist on telling ",
+          "similarity": 0.5973,
+          "intent": "product_technical_issue"
+        },
+        {
+          "conversation_id": "49999_49998",
+          "snippet": "Been waiting for a PRIME parcel for a couple of days now and when i go to t",
+          "similarity": 0.5887,
+          "intent": "order_delivery_delay"
+        }
+      ],
+      "failure_type": "intent_mismatch"
+    },
+    {
+      "id": 7,
+      "query": "My package contains essential insulin supplies that were delayed, I urgently need to locate the driver.",
+      "gold_intent": "order_delivery_delay",
+      "top1_similarity": 0.4943,
+      "retrieved_intents": [
+        "order_delivery_delay",
+        "return_and_refund",
+        "account_security_and_login"
+      ],
+      "retrieved_cases": [
+        {
+          "conversation_id": "74743_74741",
+          "snippet": "good morning the delivery driver has delivered to wrong address and don\u2019t k",
+          "similarity": 0.4943,
+          "intent": "order_delivery_delay"
+        },
+        {
+          "conversation_id": "58750_58748",
+          "snippet": "who do I\ufe0f contact about my missing package",
+          "similarity": 0.4872,
+          "intent": "return_and_refund"
+        },
+        {
+          "conversation_id": "1718_1716",
+          "snippet": "I ordered some parts of my costume late, but my amazon has a map of the dri",
+          "similarity": 0.4678,
+          "intent": "account_security_and_login"
+        }
+      ],
+      "failure_type": "low_similarity"
+    },
+    {
+      "id": 8,
+      "query": "Is there any delay affecting deliveries in the North London area due to weather conditions?",
+      "gold_intent": "order_delivery_delay",
+      "top1_similarity": 0.5475,
+      "retrieved_intents": [
+        "order_delivery_delay",
+        "order_delivery_delay",
+        "damaged_or_wrong_item"
+      ],
+      "retrieved_cases": [
+        {
+          "conversation_id": "71834_71833",
+          "snippet": "the Amazon package i am waiting for is at the local delivery hub, ,supposed",
+          "similarity": 0.5475,
+          "intent": "order_delivery_delay"
+        },
+        {
+          "conversation_id": "19191_19189",
+          "snippet": "is my parcel lost in transit I\u2019ve never experienced a delay with delivery f",
+          "similarity": 0.5435,
+          "intent": "order_delivery_delay"
+        },
+        {
+          "conversation_id": "64039_64041",
+          "snippet": "Yes, but I also received a new (incorrect) delivery date on Monday. I spent",
+          "similarity": 0.5425,
+          "intent": "damaged_or_wrong_item"
+        }
+      ],
+      "failure_type": "low_similarity"
+    },
+    {
+      "id": 11,
+      "query": "Can I redirect my shipment to an Amazon Locker instead since the delivery has been delayed?",
+      "gold_intent": "order_delivery_delay",
+      "top1_similarity": 0.7114,
+      "retrieved_intents": [
+        "account_security_and_login",
+        "account_security_and_login",
+        "other"
+      ],
+      "retrieved_cases": [
+        {
+          "conversation_id": "53515_53516",
+          "snippet": "OK, is there a way to change the shipping address to an Amazon locker then?",
+          "similarity": 0.7114,
+          "intent": "account_security_and_login"
+        },
+        {
+          "conversation_id": "5284_5286",
+          "snippet": "I\u2019m looking to reroute all my packages (except 1) to a nearby Amazon locker",
+          "similarity": 0.6387,
+          "intent": "account_security_and_login"
+        },
+        {
+          "conversation_id": "30506_30505",
+          "snippet": "don't believe this. After having to cancel last order & reorder for Amazon ",
+          "similarity": 0.6201,
+          "intent": "other"
+        }
+      ],
+      "failure_type": "intent_mismatch"
+    }
+  ]
+}

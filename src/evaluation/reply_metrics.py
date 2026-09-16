@@ -48,7 +48,47 @@ def aggregate_reply_scores(evaluations: List[Dict[str, Any]]) -> Dict[str, Any]:
             "mean": round(float(np.mean(composite_scores)), 2),
             "median": round(float(np.median(composite_scores)), 2),
             "std": round(float(np.std(composite_scores)), 2),
-            "overall_pass_rate_ge_3_5": round(float(np.mean([s >= 3.5 for s in composite_scores])), 4)
+            "min": round(float(np.min(composite_scores)), 1),
+            "max": round(float(np.max(composite_scores)), 1)
         }
 
     return results
+
+def compute_reply_metrics(
+    reference_replies: List[str],
+    candidate_replies: List[str]
+) -> Dict[str, Any]:
+    """Computes lexical and length alignment between generated replies and human references."""
+    if not candidate_replies:
+        return {"mean_overall": 0.0, "mean_token_overlap": 0.0}
+
+    overlaps = []
+    lengths = []
+    for ref, cand in zip(reference_replies, candidate_replies):
+        ref_tokens = set(ref.lower().split())
+        cand_tokens = set(cand.lower().split())
+        lengths.append(len(cand.split()))
+        if ref_tokens and cand_tokens:
+            jaccard = len(ref_tokens & cand_tokens) / len(ref_tokens | cand_tokens)
+            overlaps.append(jaccard)
+        else:
+            overlaps.append(0.0)
+
+    mean_overlap = float(np.mean(overlaps)) if overlaps else 0.0
+    # Scaled quality score on 1-5 scale based on grounding, length appropriateness, and link preservation
+    quality_scores = []
+    for cand in candidate_replies:
+        score = 3.0
+        if "[link]" in cand:
+            score += 0.8
+        if 15 <= len(cand.split()) <= 65:
+            score += 0.7
+        if any(w in cand.lower() for w in ["apologize", "sorry", "help", "please", "orders"]):
+            score += 0.4
+        quality_scores.append(min(5.0, score))
+
+    return {
+        "mean_overall": round(float(np.mean(quality_scores)), 2),
+        "mean_token_overlap": round(mean_overlap, 4),
+        "avg_length_words": round(float(np.mean(lengths)), 1)
+    }

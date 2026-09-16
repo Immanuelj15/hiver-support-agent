@@ -83,19 +83,34 @@ class SupportAgent:
                 reason=decision.reason
             )
 
+        formatted_evidence = [
+            {
+                "conversation_id": ev.get("conversation_id", ""),
+                "customer_message": ev.get("customer_msg", ""),
+                "brand_reply": ev.get("agent_reply", ""),
+                "similarity": round(float(ev.get("similarity", 0.0)), 4)
+            }
+            for ev in evidences
+        ]
+
         return {
             "customer_msg": customer_msg,
             "intent": intent,
-            "intent_confidence": confidence,
-            "classifier_reasoning": intent_res.get("reasoning", ""),
-            "retrieval_similarity": max_sim,
+            "intent_confidence": round(confidence, 4),
+            "retrieval_score": round(max_sim, 4),
+            "retrieval_similarity": round(max_sim, 4),
+            "evidence_count": len(evidences),
+            "decision": decision.action.value,
+            "decision_reason": decision.reason,
             "action": decision.action.value,
             "should_escalate": decision.should_escalate,
             "escalation_reason": decision.reason,
             "risk_level": decision.risk_level.value,
             "triggered_rule": decision.triggered_rule,
             "reply": draft_reply,
+            "evidence": formatted_evidence,
             "retrieved_evidence": evidences,
             "provider": self.llm.provider_type,
             "model": self.llm.model_name
         }
+

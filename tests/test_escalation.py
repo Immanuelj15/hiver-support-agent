@@ -85,3 +85,30 @@ def test_unverified_financial_promise():
 
     clean_reply = "You can view your tracking details in Your Orders here: [link]."
     assert policy.validate_reply(clean_reply) is None
+
+def test_unsupported_question_no_evidence_escalation():
+    """Unsupported question with zero or near-zero historical evidence must escalate."""
+    policy = EscalationPolicy(similarity_threshold=0.55)
+    decision = policy.evaluate(
+        customer_msg="Can I use Amazon Prime on my Tesla in-car dashboard while driving across Mars?",
+        predicted_intent="other",
+        intent_confidence=0.50,
+        retrieval_similarity=0.22  # Extremely low similarity
+    )
+    assert decision.action == EscalationAction.ESCALATE
+    assert decision.should_escalate is True
+    assert decision.triggered_rule in ("LOW_RETRIEVAL_SIMILARITY", "LOW_CONFIDENCE_THRESHOLD", "SENSITIVE_INTENT_RULE")
+
+
+def test_unknown_issue_low_similarity_escalation():
+    """Unknown issue with weak retrieval grounding must not auto-handle."""
+    policy = EscalationPolicy(similarity_threshold=0.55)
+    decision = policy.evaluate(
+        customer_msg="The courier left a live badger in my recycling bin and it bit my neighbor.",
+        predicted_intent="feedback_or_complaint",
+        intent_confidence=0.60,
+        retrieval_similarity=0.38  # Far below threshold
+    )
+    assert decision.action == EscalationAction.ESCALATE
+    assert decision.should_escalate is True
+

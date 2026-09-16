@@ -46,11 +46,14 @@ UNVERIFIED_FINANCIAL_PROMISE_PATTERN = re.compile(
 class EscalationPolicy:
     def __init__(
         self,
-        similarity_threshold: float = 0.55,
-        confidence_threshold: float = 0.65
+        similarity_threshold: Optional[float] = None,
+        confidence_threshold: float = 0.65,
+        retrieval_threshold: Optional[float] = None
     ):
-        self.similarity_threshold = similarity_threshold
+        self.similarity_threshold = retrieval_threshold if retrieval_threshold is not None else (similarity_threshold if similarity_threshold is not None else 0.55)
         self.confidence_threshold = confidence_threshold
+        self.retrieval_threshold = self.similarity_threshold
+
 
     def evaluate(
         self,
