@@ -1,0 +1,8 @@
+{
+  "golden_set_size": 200,
+  "retrieval_corpus_size": 4000,
+  "verbatim_text_overlap": 0,
+  "conversation_id_overlap": 0,
+  "top1_self_retrieval_count": 0,
+  "prompt_template_leakage": 0
+}

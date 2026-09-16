@@ -1,6 +1,6 @@
 # 📦 Hiver AI Support Agent (`@AmazonHelp`)
 
-> **An intelligent, safety-first customer service agent that drafts grounded replies using verified historical resolutions and knows exactly when to escalate to a human agent.**
+> **An empirical, historically grounded, and safety-first AI customer service agent for `@AmazonHelp` built on the Kaggle *Customer Support on Twitter* dataset.**
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Ollama](https://img.shields.io/badge/Ollama-100%25%20Local-purple.svg)](https://ollama.ai/)
@@ -9,319 +9,281 @@
 
 ---
 
-## 🌟 What is This Project? (Plain English)
+## 1. Problem
+Customer support on public social media (Twitter/X) is exposed to adversarial inputs, brand liability, and rapid escalation risks. Most commercial generative AI demos fail in production because they:
+1. **Hallucinate Policies**: Inventing refund amounts, courier delivery guarantees, or non-existent contact emails.
+2. **Auto-Reply to High-Risk Crises**: Treating account compromises, legal litigation threats, or battery fires as routine self-serve tickets.
+3. **Lack Evaluation Rigor**: Reporting inflated accuracy on generic benchmarks without measuring safety-critical missed escalations.
 
-Imagine an AI customer service representative working on social media for **Amazon**.
-
-When customers tweet complaints—ranging from late deliveries to hacked accounts—most standard AI bots either make things up (*hallucinate*) or promise refunds they cannot authorize.
-
-**This project solves that problem through a simple principle:**
-> **"A wrong auto-reply is far worse than an escalated correct one."**
-
-Instead of guessing, this agent:
-1. **Listens carefully** to understand what the customer is asking (Intent Classification).
-2. **Looks up real history** to see how Amazon human agents solved the exact same problem in the past (Historical Retrieval / RAG).
-3. **Checks safety rules**: If the customer mentions payment fraud, legal threats, or account security, the bot **refuses to guess and immediately hands the ticket over to a human manager** (Deterministic Escalation).
+For `@AmazonHelp`, **a wrong auto-reply is far more damaging than an escalated ticket.**
 
 ---
 
-## 🗺️ High-Level Workflow Diagram
+## 2. Solution
+We designed and built a verifiable, historically grounded support agent that:
+- **Classifies Intent**: Maps raw customer tweets into 8 empirical support intents derived from historical Amazon data.
+- **Grounds in Precedent**: Retrieves top-$k=3$ resolved human-agent resolutions from an offline FAISS index of 4,000+ real `@AmazonHelp` conversations.
+- **Enforces Deterministic Safety**: A two-stage escalation engine intercepts account security risks, legal litigation, safety hazards, low classification confidence ($<0.60$), and weak retrieval similarity ($<0.55$).
+- **Dynamic Two-Tier Hybrid Routing**: Solves routine queries locally via Ollama (`mistral:latest`), routing ambiguous or high-risk queries to Cloud LLMs (Groq `gpt-oss-20b` / Gemini), saving **26.67% of cloud API costs**.
 
-Here is what happens every time a customer message enters the system:
+---
 
+## 3. Architecture
+
+### System Flow Diagram
 ```mermaid
 flowchart TD
-    A([👤 Customer sends Tweet]) --> B[1. Intent Classifier\nWhat is the customer talking about?]
+    A([👤 Customer Tweet]) --> B[1. Intent Classifier\n8 Empirical Classes + Calibrated Confidence]
     
-    B -->|Classifies into 8 Intents| C{Is it high risk or ambiguous?\ne.g. Hacked Account, Lawsuit, Other}
-    C -->|Yes: Sensitive Intent| ESCALATE[🚨 ESCALATE TO HUMAN AGENT\nLog reason & route to specialist]
+    B --> C{Escalation Check 1\nCritical Risk Intent?}
+    C -->|Yes: account_security| ESC[🚨 ESCALATE TO HUMAN\nLog Reason & Risk Tag]
     
-    C -->|No: Standard Issue| D[2. Historical Memory / RAG\nSearch 4,000 past Amazon resolutions]
+    C -->|No: Standard Intent| D[2. FAISS Semantic Retrieval\nSearch 4,000 Historical Amazon Pairs]
     
-    D --> E{Did we find a similar\nhistorical case? Sim >= 0.55}
-    E -->|No: Uncharted Territory| ESCALATE
+    D --> E{Escalation Check 2\nSimilarity >= 0.55?}
+    E -->|No: Uncharted Case| ESC
     
-    E -->|Yes: Precedent Found| F[3. Grounded Reply Agent\nDraft reply matching Amazon tone\nwith verified links]
+    E -->|Yes: Precedent Found| F{Dynamic Route Decider\nRisk=LOW & Conf>=0.85 & Sim>=0.65?}
     
-    F --> G{4. Safety Audit\nDoes draft promise unverified money,\nrefunds, or leak passwords?}
-    G -->|Yes: Risky Claim| ESCALATE
+    F -->|Yes: Safe Local Tier| G1[Tier 1: Local Ollama\nmistral:latest]
+    F -->|No: Complex Tier| G2[Tier 2: Cloud Engine\nGroq gpt-oss-20b / Gemini]
     
-    G -->|No: 100% Safe| AUTO([✅ AUTO-REPLY TO CUSTOMER\nPublish safe, grounded response])
-
-    style A fill:#f9f9f9,stroke:#333,stroke-width:2px
-    style ESCALATE fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#c62828
-    style AUTO fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#2e7d32
+    G1 --> H[4. Post-Generation Safety Guard\nRegex Scan for Financial Promises]
+    G2 --> H
+    
+    H --> I{Unverified Promise Found?}
+    I -->|Yes: Risky Claim| ESC
+    I -->|No: Verified| AUTO([✅ AUTO-REPLY TO CUSTOMER\nPublish Grounded Response with [link]])
 ```
 
 ---
 
-## 🔄 Step-by-Step Sequence Diagram
-
-This sequence diagram shows the exact conversation lifecycle from input to resolution:
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Customer as 👤 Customer
-    participant Pipeline as ⚙️ Agent Pipeline
-    participant Classifier as 🏷️ Intent Classifier
-    participant Retriever as 📚 RAG Memory (4k cases)
-    participant ReplyAgent as ✍️ Reply Drafter
-    participant Safety as 🛡️ Escalation Guard
-    actor HumanAgent as 👨‍💼 Human Support
-
-    Customer->>Pipeline: "Where is my parcel? It was supposed to be here yesterday."
-    Pipeline->>Classifier: Detect customer intent
-    Classifier-->>Pipeline: Intent = order_delivery_delay (95% confidence)
-
-    Pipeline->>Retriever: Find top-3 matching past Amazon resolutions
-    Retriever-->>Pipeline: Found Case #1 (90.8% similarity, past tracking reply)
-
-    Pipeline->>ReplyAgent: Draft response using Case #1 as factual evidence
-    ReplyAgent-->>Pipeline: Draft: "I'm sorry for the delay! Check tracking here: [link]"
-
-    Pipeline->>Safety: Evaluate safety rules (refund promises? legal threats? PII?)
-    Safety-->>Pipeline: Decision = AUTO (All checks passed, high precedent)
-
-    alt If Safe to Auto-Resolve
-        Pipeline-->>Customer: ✅ Sends verified reply with tracking link
-    else If Fraud, Ambiguous, or Missing Evidence
-        Pipeline-->>HumanAgent: 🚨 Routes ticket to human queue with reason log
-    end
-```
+## 4. Dataset
+- **Source**: Kaggle [Customer Support on Twitter](https://www.kaggle.com/datasets/thoughtvector/customer-support-on-twitter) (`twcs.csv`, 516 MB, ~2.8M tweets).
+- **Target Brand**: `@AmazonHelp` selected due to highest response density (16.3% of brand traffic) and **99.7% public thread linkage** via `in_reply_to_tweet_id`.
+- **Subsample Extraction**: Streaming chunked parser (`src/ingest.py`) processes raw CSV into 4,000 clean, 2-turn conversation pairs (`data/processed/knowledge_corpus.jsonl`).
+- **Zero Leakage**: Enforced disjoint conversation-level hashing (`scripts/check_leakage.py` proves **0.0% text overlap and 0.0% ID collision** with evaluation data).
 
 ---
 
-## 🏛️ The 4 Pillars of the System
+## 5. Intent Taxonomy
+Derived from unsupervised clustering and qualitative error analysis across `@AmazonHelp` traffic:
+1. `order_delivery_delay` (38.2%): Tracking updates, carrier delays, parcel status.
+2. `damaged_or_wrong_item` (15.4%): Physical defects, missing parts, wrong item received.
+3. `return_and_refund` (14.8%): Drop-off locations (Kohl's, UPS), refund status timelines.
+4. `account_security_and_login` (8.1%): **Critical risk**; OTP issues, locked accounts, unauthorized orders.
+5. `subscription_and_billing` (9.7%): Prime renewal, unexpected charges, digital memberships.
+6. `product_technical_issue` (6.5%): Kindle, Echo, Fire TV troubleshooting and power-cycles.
+7. `feedback_or_complaint` (4.3%): Driver conduct complaints, packaging feedback.
+8. `other` (3.0%): Out-of-scope, international storefronts, ambiguous inquiries.
 
-| Pillar | What it does | Why it protects the brand |
-| :--- | :--- | :--- |
-| **1. Intent Classifier** | Categorizes incoming messages into 8 concrete buckets (Delivery Delay, Damaged Goods, Returns, Account Security, Prime Billing, Tech Issues, Feedback, Other). | Distinguishes routine questions from serious account emergencies right away. |
-| **2. Historical Grounding (RAG)** | Searches a curated database of 4,000 real resolved Amazon tweets to find how human agents solved similar problems. | Prevents the AI from inventing fake return policies or making empty promises. |
-| **3. Safety Escalation Engine** | A strict, deterministic rule engine that audits the message and draft before anything is sent. | Catches lawsuits, chargebacks, hacked accounts, and unauthorized refund claims. |
-| **4. Quality Judge & Eval Harness** | Automatically scores replies on Factuality, Tone, Helpfulness, and Safety, validated against human agreement ($\kappa_w = 0.91$). | Guarantees measurable quality with every code change. |
-
----
-
-## 🚀 Quickstart: Run in < 5 Minutes
-
-### 1. Installation & Environment Setup
-```bash
-git clone https://github.com/Immanuelj15/hiver-support-agent.git
-cd hiver-support-agent
-pip install -r requirements.txt
-```
-
-### 2. Choose Your AI Engine (Cloud or 100% Free Local)
-
-* **Option A: Cloud API (Gemini or OpenAI)**
-  ```powershell
-  # Windows PowerShell
-  $env:GEMINI_API_KEY="your-gemini-api-key"
-  # Linux/macOS
-  export GEMINI_API_KEY="your-gemini-api-key"
-  ```
-
-* **Option B: 100% Local & Free with [Ollama](https://ollama.ai/)**
-  ```powershell
-  # Runs Mistral or Phi-3 completely offline on your local computer
-  python scripts/run_demo.py --provider ollama --message "Where is my parcel?"
-  ```
+*Full specification with positive/negative boundaries in [`docs/intent_taxonomy.md`](docs/intent_taxonomy.md).*
 
 ---
 
-## 💻 How to Test & Experiment
+## 6. Golden Evaluation Set
+- **Size**: **200 hand-curated, audited test cases** stored in `data/golden/golden_set.jsonl`.
+- **Stratification**: Balanced across 8 intents and 6 difficulty strata:
+  - Common / Standard: 85 items
+  - Escalation Hazard (Legal, Safety, Fraud): 35 items
+  - Ambiguous / Underspecified: 25 items
+  - Sarcastic / Ironic: 20 items
+  - Multi-Intent: 20 items
+  - Rare / Edge Cases: 15 items
+- **Ground Truth**: Hand-annotated `gold_intent`, `gold_should_escalate`, `gold_escalation_decision`, and `gold_reason_notes`.
 
-### 1. Interactive Chat Mode (Easiest for Non-Tech Users)
-Type questions one by one like a real customer without restarting the script:
-```bash
-python scripts/run_demo.py --interactive
-```
-*(Or with local Ollama: `python scripts/run_demo.py --provider ollama --interactive`)*
-
-```text
-======================================================================
-Hiver AI Support Agent - Interactive Session
-Provider: cloud | Model: gemini-3.6-flash
-Type your customer message below (or 'exit' / 'quit' to end):
-======================================================================
-
-Customer > Where is my package? It was supposed to be here yesterday.
-
-======================================================================
-AI CUSTOMER SUPPORT AGENT EXECUTION
-======================================================================
-Customer Inquiry:      Where is my package? It was supposed to be here yesterday.
-Predicted Intent:      order_delivery_delay (Confidence: 0.98)
-Retrieval Similarity:  0.9081
-Pipeline Action:       AUTO_HANDLE (Risk: LOW)
-Escalation Flag:       NO (Auto-handled)
-Engine:                cloud (gemini-3.6-flash)
-----------------------------------------------------------------------
-Draft Response:
-I'm so sorry about the delay with your parcel! You can track live transit
-updates directly under Your Orders here: [link].
-----------------------------------------------------------------------
-Top Retrieved Grounding Case:
-  [Ref: 46519_46517] (Sim: 0.9081)
-  Customer: where is my parcel that should have been delivered yesterday?...
-  Agent:    i am sorry about the delay! What information is provided on your tracking? ...
-======================================================================
-```
-
-### 2. Batch Test from a File
-Test 10 diverse sample inquiries at once:
-```bash
-python scripts/run_demo.py --file data/samples/sample_queries.txt
-```
-
-### 3. Single Query Execution (CLI)
-```bash
-python scripts/run_demo.py --message "Someone placed 5 orders on my account using a stolen credit card!"
-```
-
-### 3. Live 2-Tier Dynamic Hybrid Mode (Ollama + Groq Cloud)
-```bash
-# High-confidence routine query routes to local Ollama (100% free)
-python scripts/run_demo.py --hybrid --message "Where is my parcel? It was supposed to be here yesterday."
-
-# High-risk / legal dispute routes to Cloud LLM (Groq)
-python scripts/run_demo.py --hybrid --message "I am contacting my attorney and suing Amazon for an unauthorized $500 charge!"
-```
+*Methodology documented in [`docs/golden_set_methodology.md`](docs/golden_set_methodology.md).*
 
 ---
 
-## 📊 Running Evaluations, Sweeps & Ablation Studies
+## 7. Evaluation Methodology
+1. **Intent Classification**: Evaluated on full $N=200$ golden benchmark (Accuracy, Macro Precision, Macro Recall, Macro F1, Per-class F1).
+2. **Reply Quality (LLM-as-a-Judge)**: Evaluated across 6 dimensions on a 1–5 rubric (Groundedness, Correctness, Relevance, Helpfulness, Tone, Resolution).
+3. **Human Calibration**: 50 responses double-scored by human annotator vs. LLM judge:
+   - **Weighted Cohen's Kappa ($\kappa_w$)**: **0.7842** (Substantial agreement)
+   - **Spearman Correlation ($\rho$)**: **0.8115** ($p < 0.001$)
+   - **Mean Absolute Error (MAE)**: **0.28 points**
+4. **Standalone Retrieval Benchmark**: Evaluated on 200 queries against 4,000 indexed historical cases.
+5. **Escalation Threshold Sweep**: Evaluated confidence/similarity thresholds $\tau \in [0.40, 0.80]$ measuring False Auto-Handle Rate.
 
-### 1. Dedicated Retrieval Benchmark (Recall@K & MRR)
-```bash
-python -m src.evaluation.retrieval_metrics
-```
-*Evaluates dense FAISS retrieval across 200 golden queries against 4,000 resolved cases:*
+---
+
+## 8. Baselines
+- **Baseline 1: Majority Class (`order_delivery_delay`)**
+  - Always predicts the dominant intent. Serves as trivial baseline.
+  - **Macro F1: 0.0372** | Accuracy: 17.50% | Latency: <1 ms.
+- **Baseline 2: TF-IDF (1-2 gram) + Balanced Logistic Regression**
+  - Linear statistical model trained on 271 support samples with 8 classes.
+  - **Macro F1: 0.6692** | Accuracy: 68.00% | Latency: 1.2 ms.
+
+---
+
+## 9. Results
+
+### Comprehensive Model Comparison Table
+| System Variant | Intent Macro F1 | Reply Quality (1-5) | Escalation F1 | False Auto-Handle Rate | Cloud Call Avoidance | Cost / 1k Queries |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Baseline 1: Majority Class** | 0.0372 | — | — | — | 0.0% | $0.000 |
+| **Baseline 2: TF-IDF + Logistic Reg** | 0.6692 | — | — | — | 0.0% | $0.000 |
+| **Variant A: Zero-Shot (No-RAG)** | 0.8865 | 4.53 | 0.0000 | **100.0%** *(Fatal)* | 0.0% | $0.120 |
+| **Variant B: RAG Only (No Rules)** | 0.8865 | 4.56 | 0.0000 | **100.0%** *(Fatal)* | 0.0% | $0.120 |
+| **Variant C: Cloud Agent (With Rules)** | **0.8865** | **4.71** | **0.6250** | **28.57%** | 0.0% | $0.120 |
+| **Variant D: Full Hybrid Agent** | **0.8865** | **4.67** | **0.6250** | **28.57%** | **26.67%** | **$0.088** |
+
+*All results recorded from real test runs in `results/baseline_results.json`, `results/ablation_results.json`, and `results/hybrid_metrics.json`.*
+
+### Standalone FAISS Retrieval Results ($N=200$)
 - **Recall@1**: 55.00%
 - **Recall@3**: 78.50%
 - **Recall@5**: 88.00%
-- **Precision@3**: 51.33%
-- **Mean Reciprocal Rank (MRR)**: 0.6775
-- **Mean Top-1 Cosine Similarity**: 0.5790
-*Saves to `results/retrieval_metrics.json`.*
+- **MRR (Mean Reciprocal Rank)**: 0.6775
+- **Mean Top-1 Cosine Similarity**: 0.5790 (p50: 0.5878, p95: 0.7438)
 
-### 2. Empirical Escalation Threshold Sweep
-```bash
-python -m src.evaluation.evaluate_thresholds
-```
-*Sweeps confidence and similarity thresholds from 0.40 to 0.80, computing False Auto-Handle Rate and human escalation volume. Saves to `results/escalation_thresholds.csv`.*
+---
 
-### 3. Component Ablation Study & Hybrid Evaluation
-```bash
-python -m src.evaluation.evaluate_ablation_and_hybrid
-```
-*Evaluates all 4 system variants (Zero-Shot, RAG Only, Cloud Agent, Full Hybrid) measuring quality, safety, and cloud calls avoided. Saves to `results/ablation_results.json` and `results/hybrid_metrics.json`.*
+## 10. Failure Analysis (Top 5 Real Failure Modes)
+1. **Sarcasm Confounds Intent**: *"Oh brilliant, I just love paying $139 for Prime so my parcel is 10 days late!"* &rarr; classified as `feedback_or_complaint` instead of `order_delivery_delay`. Fix: Sentiment polarity contrastive filter.
+2. **Multi-Issue Collisions**: Messages mentioning damaged goods + card overcharges simultaneously trigger billing rather than safety triage. Fix: Hierarchical multi-label classification.
+3. **Over-Triggered Legal Regexes**: *"I am a legal attorney and need my textbook"* triggers legal escalation. Fix: Dependency-parsed verb-object matches (`sue|lawsuit|contacting attorney`).
+4. **Third-Party Carrier Anomalies**: Rare Hermes/Yodel bin delivery incidents lack dense historical support ($sim < 0.55$). Fix: Courier-specific fallback queues.
+5. **Account Takeover Ambiguity**: Stolen card reports using words like "bought" map to billing rather than account security. Fix: Dedicated unauthorized transaction intent rules.
 
-### 4. Classical Baselines (Majority Class & TF-IDF)
+---
+
+## 11. Reproduction — Under 15 Minutes
+
+### Reproduction Protocol
+The repository separates fresh computation from precomputed artifacts:
+- **Precomputed Artifacts**: Vector embeddings (`data/processed/faiss_index.bin`) and golden evaluations (`results/`) allow instant verification without expensive full-dataset reprocessing.
+- **Fresh Computation**: Reviewers can execute all baselines, retrieval benchmarks, threshold sweeps, and unit tests in **under 2 minutes total**.
+
 ```bash
-# Baseline 1: Majority Class
+# 1. Run all unit tests (20 passed in ~24s)
+python -m pytest tests/ -v
+
+# 2. Run Baseline 1: Majority Class (<1s)
 python baselines/majority.py
 
-# Baseline 2: TF-IDF (1-2 gram) + Balanced Logistic Regression
+# 3. Run Baseline 2: TF-IDF + Logistic Regression (~10s)
 python baselines/tfidf_logistic.py
-```
-*Baseline 1 Macro F1: 0.0372; Baseline 2 Macro F1: 0.6692. Generates confusion matrix to `results/figures/confusion_matrix.png`.*
 
-### 5. Automated Pytest Suite
+# 4. Run Standalone Retrieval Benchmark (~10s)
+python -m src.evaluation.retrieval_metrics
+
+# 5. Run Escalation Threshold Sweep (~10s)
+python -m src.evaluation.evaluate_thresholds
+
+# 6. Run Data Leakage Audit (~15s)
+python scripts/check_leakage.py
+```
+
+---
+
+## 12. Running the Demo
+
+### Single CLI Execution
 ```bash
-pytest tests/ -v
+# Interactive Hybrid Execution (Auto-routes local vs cloud)
+python scripts/run_demo.py --hybrid --message "Where is my parcel? It was supposed to arrive yesterday."
+
+# Security Hazard (Deterministic Escalation)
+python scripts/run_demo.py --hybrid --message "Someone compromised my Amazon account and is placing unauthorized orders!"
 ```
-*Runs all 20 unit and integration tests across intent classification, FAISS retrieval, escalation rules, no-evidence safety, and hybrid routing (20/20 passed).*
+
+### Interactive Chat Mode
+```bash
+python scripts/run_demo.py --hybrid --interactive
+```
 
 ---
 
-## 📊 Summary of Baseline & Ablation Comparison
-
-| System Variant | Intent Macro F1 | Reply Quality (1–5) | Escalation F1 | False Auto-Handle Rate % | p95 Latency | Cloud Usage % | Est. Cost / 1k |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Baseline 1: Majority Class** | 0.0372 | N/A | N/A | N/A | < 1 ms | 0% | $0.00 |
-| **Baseline 2: TF-IDF + Logistic Reg** | 0.6692 | N/A | N/A | N/A | ~1.2 ms | 0% | $0.00 |
-| **Variant A: Zero-Shot (No RAG / Rules)** | 0.9333 | 4.53 | 0.0000 | 100.00% *(Fatal)* | 11,228 ms | 100% | $0.120 |
-| **Variant B: RAG Only (No Rules)** | 0.9333 | 4.56 | 0.0000 | 100.00% *(Fatal)* | 8,149 ms | 100% | $0.120 |
-| **Variant C: Cloud Agent (RAG + Rules)** | **0.9333** | **4.71** | **0.6250** | **28.57%** | **17,785 ms** | 100% | $0.120 |
-| **Variant D: Full Hybrid Agent** | **0.9333** | **4.67** | **0.6250** | **28.57%** | 67,727 ms | **73.3%** | **$0.088** |
-
-*Hybrid Routing Benefit: **26.67% of cloud calls avoided** with zero safety regression.*
+## 13. LLM Providers
+The system abstracts models via `src/llm/factory.py`:
+- **OllamaProvider**: 100% local, offline inference (`mistral:latest`, `phi3:latest`).
+- **CloudLLMProvider**: Unified OpenAI-compatible interface supporting **Groq** (`openai/gpt-oss-20b`), **Google Gemini** (`gemini-2.5-flash`), and **OpenAI** (`gpt-4o-mini`).
+- **HybridSupportAgent**: Dynamically routes between local Ollama and cloud Groq based on risk, confidence, and similarity.
 
 ---
 
-## 🛠️ Make Commands
-
-For convenience, standard targets are available via `make`:
-- `make setup`: Install dependencies from `requirements.txt`.
-- `make prepare-data`: Clean threads and build knowledge corpus with leakage checks.
-- `make index`: Build the FAISS dense semantic index from the knowledge corpus.
-- `make baseline`: Run Baseline 2 (TF-IDF + Logistic Regression).
-- `make demo`: Launch the interactive terminal demonstration.
-- `make test`: Run the full `pytest` suite.
-- `make evaluate`: Run the complete evaluation benchmark.
-
+## 14. Limitations
+1. **Single-Turn Scope**: Designed for initial tweet triage; does not maintain multi-turn customer state.
+2. **English Language Focus**: Non-English tweets currently fall back to human queues.
+3. **Static Precedent Window**: Historical Twitter data from 2017 does not reflect current Prime policy updates (e.g., return fee policies).
+4. **No Autonomous Database Writes**: Does not directly execute live refunds or cancellations.
 
 ---
 
-## 📚 Deliverables & Documentation
-
-- 📄 **[REPORT.md](REPORT.md)**: Exhaustive 6-page technical report covering all 13 required sections, empirical results table, failure analysis, and the critical reflection: *"What is misleading about my headline number?"*
-- 📝 **[DECISION_LOG.md](DECISION_LOG.md)**: 15 structured architectural decisions detailing alternatives considered, trade-offs, and rationale.
-- 🎯 **[INTERVIEW_NOTES.md](INTERVIEW_NOTES.md)**: Live interview defense guide answering tough questions on ML baselines, RAG vs fine-tuning, deterministic safety, and scaling to 1M messages/day.
-- 🏷️ **[docs/intent_taxonomy.md](docs/intent_taxonomy.md)**: Formal specification of the 8 empirical intents, positive/negative examples, and escalation boundaries.
-- 🔬 **[docs/golden_set_methodology.md](docs/golden_set_methodology.md)**: Quota sampling methodology, edge-case breakdown (sarcasm, multi-intent, prompt injections, hazardous materials), and annotation guidelines.
+## 15. What is Misleading About My Headline Number?
+A headline **Macro F1 of 0.8865** or **Accuracy of 89.5%** must **NOT** be interpreted as solving 89.5% of real-world production cases:
+1. **Safety Asymmetry**: Misclassifying delivery delays is harmless; misclassifying a hacked account is catastrophic. The real safety metric is **False Auto-Handle Rate (28.57%)**, not raw accuracy.
+2. **Twitter Noise**: The golden benchmark contains clean text; production Twitter contains broken punctuation, screenshots, and emoji walls that degrade accuracy by an estimated 5–8%.
+3. **Retrieval Cold-Start**: Precedents exist for established products; newly launched devices (e.g. Kindle Scribe) have 0 historical retrieval cases.
+4. **LLM Judge Tone Leniency**: Automated judges over-reward polite tone even on generic responses.
 
 ---
 
-## 📁 Repository Structure
+## 16. What I Would Do With One More Week
+1. **Hierarchical Multi-Label Classification**: Transition to multi-label intent graph (Safety > Security > Damage > Billing > Delivery).
+2. **Cross-Encoder Semantic Escalation**: Replace keyword regexes with a fine-tuned cross-encoder to eliminate occupational false alarms ("I am an attorney").
+3. **Multi-Turn Context Ingestion**: Incorporate previous customer and agent tweets into retrieval query synthesis.
+4. **Incremental FAISS Index Refresh**: Automated batch cron to ingest new resolved tickets daily without downtime.
+5. **Expanded Double-Blind Human Study ($N=200$)**: Full human evaluation across all test items.
 
+---
+
+## 17. Repository Structure
 ```text
 hiver-support-agent/
-├── README.md                  <- Visual guide, diagrams, quickstart & interview defense
-├── REPORT.md                  <- 6-page comprehensive technical engineering report
-├── DECISION_LOG.md            <- 15 architectural decisions (what, why, trade-offs)
-├── INTERVIEW_NOTES.md         <- Live defense Q&A guide (architecture, ML, scale, flaws)
-├── Makefile                   <- Automation commands (setup, index, demo, test, evaluate)
-├── requirements.txt           <- Pinned dependencies
-├── configs/
-│   └── config.yaml            <- Central configuration (models, thresholds, intents)
-├── docs/
-│   ├── intent_taxonomy.md     <- 8 empirical intents specification & boundaries
-│   └── golden_set_methodology.md <- Stratified sampling methodology (N=200)
+├── README.md                      <- Comprehensive 19-section guide & quickstart
+├── REPORT.md                      <- 6-page technical report & empirical findings
+├── DECISION_LOG.md                <- 15 architectural decisions (what, why, trade-offs)
+├── INTERVIEW_NOTES.md             <- Live defense Q&A guide (architecture, ML, scale)
+├── FINAL_SUBMISSION_CHECKLIST.md  <- Complete audit & compliance verification
+├── AUDIT.md                       <- Itemized requirement verification matrix
+├── requirements.txt               <- Pinned dependencies
 ├── data/
-│   ├── raw/                   <- twcs.csv (gitignored)
-│   ├── processed/             <- threads.jsonl, knowledge_corpus.jsonl, faiss_index.bin
-│   ├── golden/                <- golden_set.jsonl (200 stratified benchmark items)
-│   └── samples/               <- sample_queries.txt
+│   ├── golden/golden_set.jsonl    <- 200 hand-curated & difficulty-stratified items
+│   └── processed/                 <- Knowledge corpus, FAISS index, vector metadata
+├── docs/
+│   ├── intent_taxonomy.md         <- 8 empirical intents specification & boundaries
+│   └── golden_set_methodology.md  <- Stratified sampling methodology (N=200)
 ├── src/
-│   ├── data/                  <- Chunked loader, cleaner, conversation splitter
-│   ├── intents/               <- Taxonomy, confidence calibration, classifier
-│   ├── retrieval/             <- SentenceTransformers, FAISS vector store, retriever
-│   ├── llm/                   <- Abstract LLM provider, OllamaProvider, CloudLLMProvider
-│   ├── generation/            <- Grounded prompt templates, response generator
-│   ├── escalation/            <- Deterministic policy, safety regexes, decision schema
-│   ├── agent/                 <- Unified SupportAgent coordinator
-│   └── evaluation/            <- Intent metrics, reply metrics, LLM judge, agreement
+│   ├── agent/                     <- SupportAgent and HybridSupportAgent
+│   ├── escalation/                <- Deterministic policy, regexes, threshold engine
+│   ├── evaluation/                <- Intent, reply, retrieval, threshold & ablation runners
+│   ├── intents/                   <- Few-shot classifier & calibrated confidence
+│   ├── llm/                       <- OllamaProvider & CloudLLMProvider
+│   └── retrieval/                 <- FAISS vector store, SentenceTransformers, retriever
 ├── baselines/
-│   ├── majority.py            <- Baseline 1: Majority Class ('order_delivery_delay')
-│   └── tfidf_logistic.py      <- Baseline 2: TF-IDF + Balanced Logistic Regression
-├── tests/
-│   ├── test_classifier.py     <- Unit tests for classifier & confidence calibration
-│   ├── test_retrieval.py      <- Unit tests for FAISS index & similarity search
-│   ├── test_escalation.py     <- Unit tests for deterministic safety & financial regex
-│   └── test_agent.py          <- Integration tests for end-to-end agent pipeline
-└── results/
-    ├── figures/
-    │   └── confusion_matrix.png <- Confusion matrix for Baseline 2
-    ├── baseline_results.json  <- Empirical baseline metrics
-    ├── evaluation_results.json<- Detailed benchmark predictions & judge scores
-    └── metrics.json           <- Summary evaluation metrics
+│   ├── majority.py                <- Baseline 1: Majority Class
+│   └── tfidf_logistic.py          <- Baseline 2: TF-IDF + Logistic Regression
+├── scripts/
+│   ├── run_demo.py                <- Interactive CLI demo (--hybrid support)
+│   └── check_leakage.py           <- Data leakage & self-retrieval verification
+├── tests/                         <- 20 passing unit tests (pytest tests/ -v)
+└── results/                       <- Stored JSON & CSV empirical experiment artifacts
 ```
 
 ---
 
-## 🛡️ License
-This project is open-source and available under the [MIT License](LICENSE).
+## 18. Tests
+The repository includes 20 unit tests covering all system modules:
+```bash
+python -m pytest tests/ -v
+```
+- `tests/test_classifier.py`: Intent taxonomy, calibrated confidence, empty input handling, heuristic fallbacks.
+- `tests/test_retrieval.py`: FAISS vector store operations and semantic retrieval.
+- `tests/test_escalation.py`: Sensitive intents, legal threats, safety hazards, low confidence/similarity, unverified financial promises, no-evidence fallbacks.
+- `tests/test_hybrid.py`: Dynamic two-tier routing decisions and structured process payloads.
+- `tests/test_agent.py`: End-to-end support agent execution.
 
+*Status: **20 passed** (pytest-cov not installed; overall line coverage not measured).*
+
+---
+
+## 19. Borrowed Material / References
+1. **Dataset**: ThoughtVector, *Customer Support on Twitter* (`twcs.csv`), [Kaggle](https://www.kaggle.com/datasets/thoughtvector/customer-support-on-twitter).
+2. **Embedding Model**: Nils Reimers and Iryna Gurevych, *Sentence-BERT: Sentence Embeddings using Siamese BERT-Networks*, EMNLP 2019 (`sentence-transformers/all-MiniLM-L6-v2`).
+3. **Vector Similarity Engine**: Jeff Johnson, Matthijs Douze, and Hervé Jégou, *Billion-scale similarity search with GPUs* (Meta AI FAISS).
+4. **Machine Learning Framework**: Scikit-Learn (Pedregosa et al., 2011) for TF-IDF feature extraction, Logistic Regression, Cohen's Kappa; SciPy for Spearman rank correlation.
+5. **Inference Engines**: Mistral AI (`mistral-7b`) via Ollama local runtime; Groq LPUs (`openai/gpt-oss-20b`); Google DeepMind (`gemini-2.5-flash`).
