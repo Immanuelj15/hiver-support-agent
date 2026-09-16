@@ -14,11 +14,19 @@ from pathlib import Path
 # Ensure project root on sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+# Ensure utf-8 stdout on Windows
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
 from src.agent.support_agent import SupportAgent
 from src.llm.factory import get_llm_provider
 
 def format_terminal_output(res: dict) -> None:
     """Print readable audit trail safe for all terminal encodings."""
+
     print("\n" + "=" * 70)
     print("AI CUSTOMER SUPPORT AGENT EXECUTION")
     print("=" * 70)
@@ -76,7 +84,7 @@ def main():
     parser.add_argument("--message", type=str, help="Single customer message string")
     parser.add_argument("--file", type=str, help="Path to text file containing one query per line")
     parser.add_argument("--interactive", action="store_true", help="Launch interactive chat session")
-    parser.add_argument("--provider", type=str, choices=["ollama", "cloud"], help="Override LLM provider")
+    parser.add_argument("--provider", type=str, choices=["ollama", "cloud", "groq"], help="Override LLM provider")
     parser.add_argument("--model", type=str, help="Override LLM model name")
     parser.add_argument("--json", action="store_true", help="Output full JSON instead of formatted text")
     args = parser.parse_args()
